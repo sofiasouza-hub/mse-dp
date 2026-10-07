@@ -42,11 +42,17 @@ def init_supabase() -> Client:
 
 supabase = init_supabase()
 
-# Buscar lista de colaboradores
+# Buscar lista de colaboradores com salvaguarda
 @st.cache_data(ttl=5)
 def get_colaboradores():
-    res = supabase.table("colaboradores").select("nome").order("nome").execute()
-    return [item['nome'] for item in res.data]
+    try:
+        res = supabase.table("colaboradores").select("nome").order("nome").execute()
+        nomes = [item['nome'] for item in res.data] if res.data else []
+        if not nomes:
+            nomes = ['ANY', 'BRUNA', 'FERNANDA', 'ISAAC', 'MARIA', 'NATALIA', 'SOFIA']
+        return nomes
+    except Exception:
+        return ['ANY', 'BRUNA', 'FERNANDA', 'ISAAC', 'MARIA', 'NATALIA', 'SOFIA']
 
 lista_equipe = get_colaboradores()
 
@@ -63,7 +69,12 @@ st.markdown("""
 
 col_top1, col_top2 = st.columns([3, 1])
 with col_top2:
-    usuario_ativo = st.selectbox("👤 Usuário Ativo", options=lista_equipe, index=lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0)
+    idx_padrao = lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0
+    usuario_ativo = st.selectbox("👤 Usuário Ativo", options=lista_equipe, index=idx_padrao)
+
+# Garantir string válida
+if not usuario_ativo:
+    usuario_ativo = "SOFIA"
 
 # --- NAVEGAÇÃO POR ABAS ---
 aba1, aba2, aba3, aba4 = st.tabs(["🔴 Meus Lembretes", "📅 Calendário Coletivo", "📋 Mural da Equipe", "⚙️ Gerenciar Equipe"])
@@ -109,7 +120,7 @@ with aba1:
             df['Status'] = df['concluido'].apply(lambda x: "🟢 Concluído" if x else "🟡 Pendente")
             st.dataframe(df[['Data/Hora', 'conteudo', 'Status']].rename(columns={'conteudo': 'Lembrete'}), use_container_width=True)
         else:
-            st.info("Nenhum lembrete agendado para " + usuario_ativo)
+            st.info(f"Nenhum lembrete agendado para {usuario_ativo}")
 
     with col_dir:
         st.subheader("🔔 Próximo Lembrete")
@@ -175,5 +186,5 @@ with aba4:
                 st.success(f"{novo_nome} adicionado com sucesso!")
                 st.cache_data.clear()
                 st.rerun()
-            except Exception as e:
+            except Exception:
                 st.error("Nome já cadastrado ou erro ao salvar.")
