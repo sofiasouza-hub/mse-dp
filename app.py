@@ -28,8 +28,8 @@ st.markdown(textwrap.dedent("""
 }
 
 .block-container {
-    max-width: 1380px;
-    padding: 18px 28px 32px 28px;
+    max-width: 1240px;
+    padding: 16px 24px 28px 24px;
 }
 
 #MainMenu, footer, header {
@@ -115,7 +115,7 @@ div[data-testid="stHorizontalBlock"] {
 }
 
 div[role="radiogroup"] {
-    gap: 8px !important;
+    gap: 7px !important;
     background: transparent !important;
 }
 
@@ -148,6 +148,9 @@ div[role="radiogroup"] > label input {
 
 div[role="radiogroup"] > label > div:first-child {
     display: none !important;
+}
+div[role="radiogroup"] > label {
+    cursor: pointer !important;
 }
 
 /* ---------- CARDS ---------- */
@@ -464,21 +467,20 @@ lista_equipe = get_colaboradores()
 # ============================================================
 # TOPBAR
 # ============================================================
-st.markdown(textwrap.dedent("""
+st.html("""
 <div class="topbar">
     <div class="brand">
         <span class="brand-mse">MSE</span>
         <span class="brand-divider">|</span>
         <span class="brand-dp">DP</span>
     </div>
-
     <div class="top-status">
         <span class="connected">● Nuvem Conectada</span>
         <span>|</span>
         <span>👤 Usuário: Sofia</span>
     </div>
 </div>
-"""), unsafe_allow_html=True)
+""")
 
 
 # ============================================================
@@ -702,7 +704,7 @@ if menu == "🔔  Meus Lembretes":
             </table>
             """
 
-            st.markdown(html_tabela, unsafe_allow_html=True)
+            st.html(html_tabela)
 
         else:
             st.info(f"Nenhum lembrete agendado para {usuario_ativo}.")
@@ -820,7 +822,7 @@ if menu == "🔔  Meus Lembretes":
 
         nome_mes = meses[hoje.month]
 
-        st.markdown(textwrap.dedent(f"""
+        st.html(f"""
         <div class="calendar-card">
             <div class="calendar-head">
                 <span>📅 &nbsp;{nome_mes} {hoje.year}</span>
@@ -828,7 +830,7 @@ if menu == "🔔  Meus Lembretes":
             </div>
             {montar_calendario(hoje, dict_eventos)}
         </div>
-        """), unsafe_allow_html=True)
+        """)
 
         # Seleção para visualizar os compromissos
         dias_com_evento = sorted(dict_eventos.keys())
