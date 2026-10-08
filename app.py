@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# CSS — VISUAL DA REFERÊNCIA (COM FIX DEFINITIVO DE CARD BRANCO)
+# CSS — VISUAL DA REFERÊNCIA
 # ============================================================
 st.markdown(textwrap.dedent("""
 <style>
@@ -90,6 +90,18 @@ div[data-testid="stVerticalBlock"] {
 .connected {
     color: #4ade80;
     font-weight: 600;
+}
+
+/* ---------- USUÁRIO ---------- */
+.user-row {
+    margin-top: -1px;
+    margin-bottom: 9px;
+}
+
+.user-label {
+    color: #64748b;
+    font-size: 11px;
+    margin-bottom: -7px;
 }
 
 /* ---------- MENU PRINCIPAL ---------- */
@@ -940,21 +952,21 @@ elif menu == "📅  Calendário Coletivo":
         )
 
         if res_notas.data:
-            df_notas = pd.DataFrame(res_notas.data)[
-                ["data", "autor", "nota"]
-            ]
-
-            df_notas.columns = [
-                "Data",
-                "Autor",
-                "Recado",
-            ]
-
-            st.dataframe(
-                df_notas,
-                use_container_width=True,
-                hide_index=True,
-            )
+            for nota_item in res_notas.data:
+                col_info, col_del = st.columns([4, 1])
+                with col_info:
+                    st.markdown(
+                        f"🗓️ **{nota_item.get('data')}** — {nota_item.get('nota')} *(por {nota_item.get('autor')})*"
+                    )
+                with col_del:
+                    if nota_item.get("autor") == usuario_ativo:
+                        if st.button("🗑️ Apagar", key=f"del_nota_{nota_item['id']}"):
+                            supabase.table("notas_calendario").delete().eq("id", nota_item["id"]).execute()
+                            st.success("Recado apagado!")
+                            st.rerun()
+                    else:
+                        st.caption("🔒 Somente o criador")
+                st.markdown("<div class='soft-divider'></div>", unsafe_allow_html=True)
         else:
             st.info("Nenhum recado cadastrado.")
 
@@ -963,7 +975,7 @@ elif menu == "📅  Calendário Coletivo":
 
 
 # ============================================================
-# ABA 3 — MURAL DA EQUIPE (CONTAINER COM CHAVE CHAVEADA E BRANCO PURISSIMO)
+# ABA 3 — MURAL DA EQUIPE
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
@@ -996,7 +1008,7 @@ elif menu == "📋  Mural da Equipe":
 
                 for item in res_mural.data:
 
-                    c1, c2, c3 = st.columns([3.6, 1, 1])
+                    c1, c2, c3, c4 = st.columns([3.2, 0.9, 0.9, 0.9])
 
                     with c1:
                         try:
@@ -1039,24 +1051,16 @@ elif menu == "📋  Mural da Equipe":
 
                     with c3:
                         if not item.get("concluido"):
-
                             if item.get("usuario") == usuario_ativo:
-
                                 if st.button(
                                     "☑️ Concluir",
                                     key=f"btn_{item['id']}",
                                 ):
-
                                     if item.get("recorrente_mensal"):
-
                                         dt_atual = datetime.fromisoformat(
                                             item["data_hora"].replace("Z", "")
                                         )
-
-                                        dt_prox_mes = (
-                                            dt_atual +
-                                            relativedelta(months=1)
-                                        )
+                                        dt_prox_mes = dt_atual + relativedelta(months=1)
 
                                         supabase.table("lembretes").insert({
                                             "usuario": item["usuario"],
@@ -1068,16 +1072,19 @@ elif menu == "📋  Mural da Equipe":
 
                                     supabase.table("lembretes").update(
                                         {"concluido": True}
-                                    ).eq(
-                                        "id",
-                                        item["id"],
-                                    ).execute()
+                                    ).eq("id", item["id"]).execute()
 
                                     st.success("Lembrete concluído!")
                                     st.rerun()
-
                             else:
-                                st.caption("🔒 Somente o criador")
+                                st.caption("🔒 Criador")
+
+                    with c4:
+                        if item.get("usuario") == usuario_ativo:
+                            if st.button("🗑️ Apagar", key=f"del_mural_{item['id']}"):
+                                supabase.table("lembretes").delete().eq("id", item["id"]).execute()
+                                st.success("Lembrete removido!")
+                                st.rerun()
 
                     st.markdown(
                         "<div class='soft-divider'></div>",
