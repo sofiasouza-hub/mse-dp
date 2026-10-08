@@ -124,7 +124,7 @@ div[role="radiogroup"] > label {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 5px !important;
-    min-height: 36px !important;
+    min-height: 38px !important;
     padding: 0 17px !important;
     box-shadow: 0 1px 2px rgba(15,23,42,.04);
     color: #475569 !important;
@@ -137,10 +137,10 @@ div[role="radiogroup"] > label:hover {
 }
 
 div[role="radiogroup"] > label:has(input:checked) {
-    background: #ffffff !important;
-    border: 2px solid #dc2638 !important;
-    color: #dc2638 !important;
-    box-shadow: 0 2px 5px rgba(220,38,56,.12);
+    background: #dc2638 !important;
+    border-color: #dc2638 !important;
+    color: white !important;
+    box-shadow: 0 2px 5px rgba(220,38,56,.18);
 }
 
 div[role="radiogroup"] > label input {
@@ -152,6 +152,47 @@ div[role="radiogroup"] > label > div:first-child {
 }
 div[role="radiogroup"] > label {
     cursor: pointer !important;
+}
+
+
+/* ---------- MENU PRINCIPAL ---------- */
+div[role="radiogroup"] {
+    gap: 7px !important;
+    background: transparent !important;
+    flex-wrap: wrap !important;
+}
+
+div[role="radiogroup"] > label {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 5px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    box-shadow: 0 1px 2px rgba(15,23,42,.04);
+    color: #475569 !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+}
+
+div[role="radiogroup"] > label:hover {
+    border-color: #dc2638 !important;
+    color: #dc2638 !important;
+}
+
+div[role="radiogroup"] > label:has(input:checked) {
+    background: #ffffff !important;
+    border: 2px solid #dc2638 !important;
+    color: #dc2638 !important;
+    box-shadow: 0 1px 4px rgba(220,38,56,.12);
+}
+
+div[role="radiogroup"] > label input {
+    display: none !important;
+}
+
+div[role="radiogroup"] > label > div:first-child {
+    display: none !important;
 }
 
 /* ---------- CARDS ---------- */
@@ -1089,4 +1130,361 @@ if menu == "🔔  Meus Lembretes":
                 </div>
                 """)
 
+# ABA 2 — CALENDÁRIO COLETIVO
+# ============================================================
+elif menu == "📅  Calendário Coletivo":
 
+    st.markdown(textwrap.dedent("""
+    <div class="card">
+        <div class="card-title">📅 &nbsp;Calendário Coletivo do DP</div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:12px;">
+            Avisos, reuniões e eventos gerais visíveis para todo o setor.
+        </div>
+    """), unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        dia_selecionado = st.date_input(
+            "Data",
+            value=date.today(),
+        )
+
+    with col2:
+        nota_texto = st.text_input(
+            "Recado ou compromisso do setor",
+            placeholder="Ex: Reunião do DP às 14:00",
+        )
+
+    if st.button(
+        "💾  Salvar no Calendário",
+        type="primary",
+    ):
+        if nota_texto:
+            try:
+                supabase.table("notas_calendario").insert({
+                    "data": str(dia_selecionado),
+                    "autor": usuario_ativo,
+                    "nota": nota_texto,
+                }).execute()
+
+                st.success("Nota gravada com sucesso!")
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"Erro ao salvar: {e}")
+        else:
+            st.warning("Digite um recado ou compromisso.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown(textwrap.dedent("""
+    <div class="card">
+        <div class="section-title">📋 Recados cadastrados</div>
+    """), unsafe_allow_html=True)
+
+    try:
+        res_notas = (
+            supabase
+            .table("notas_calendario")
+            .select("*")
+            .order("data", desc=True)
+            .execute()
+        )
+
+        if res_notas.data:
+            df_notas = pd.DataFrame(res_notas.data)[
+                ["data", "autor", "nota"]
+            ]
+
+            df_notas.columns = [
+                "Data",
+                "Autor",
+                "Recado",
+            ]
+
+            st.dataframe(
+                df_notas,
+                use_container_width=True,
+                hide_index=True,
+            )
+        else:
+            st.info("Nenhum recado cadastrado.")
+
+    except Exception as e:
+        st.error(f"Erro ao carregar recados: {e}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ============================================================
+# ABA 3 — MURAL
+# ============================================================
+elif menu == "📋  Mural da Equipe":
+
+    st.markdown(textwrap.dedent("""
+    <div class="card">
+        <div class="card-title">📋 &nbsp;Mural da Equipe</div>
+    """), unsafe_allow_html=True)
+
+    filtro_pessoa = st.selectbox(
+        "Filtrar por colaborador",
+        ["Todos"] + lista_equipe,
+    )
+
+    try:
+        query = supabase.table("lembretes").select("*")
+
+        if filtro_pessoa != "Todos":
+            query = query.eq("usuario", filtro_pessoa)
+
+        res_mural = query.order(
+            "data_hora",
+            desc=True,
+        ).execute()
+
+        if res_mural.data:
+
+            for item in res_mural.data:
+
+                c1, c2, c3 = st.columns([3.6, 1, 1])
+
+                with c1:
+                    try:
+                        dt_format = datetime.fromisoformat(
+                            item["data_hora"].replace("Z", "")
+                        ).strftime("%d/%m/%Y %H:%M")
+                    except Exception:
+                        dt_format = ""
+
+                    rec_label = (
+                        " 🔄 Repete todo mês"
+                        if item.get("recorrente_mensal")
+                        else ""
+                    )
+
+                    st.markdown(
+                        f"""
+                        <div style="font-size:12px;color:#334155;padding-top:4px;">
+                            👤 <b>{item.get("usuario","")}</b> —
+                            {item.get("conteudo","")}
+                            <span style="color:#94a3b8;">
+                                &nbsp;({dt_format}{rec_label})
+                            </span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                with c2:
+                    if item.get("concluido"):
+                        st.markdown(
+                            '<span class="badge badge-concluido">Concluído</span>',
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            '<span class="badge badge-pendente">Pendente</span>',
+                            unsafe_allow_html=True,
+                        )
+
+                with c3:
+                    if not item.get("concluido"):
+
+                        if item.get("usuario") == usuario_ativo:
+
+                            if st.button(
+                                "☑️ Concluir",
+                                key=f"btn_{item['id']}",
+                            ):
+
+                                if item.get("recorrente_mensal"):
+
+                                    dt_atual = datetime.fromisoformat(
+                                        item["data_hora"].replace("Z", "")
+                                    )
+
+                                    dt_prox_mes = (
+                                        dt_atual +
+                                        relativedelta(months=1)
+                                    )
+
+                                    supabase.table("lembretes").insert({
+                                        "usuario": item["usuario"],
+                                        "conteudo": item["conteudo"],
+                                        "data_hora": dt_prox_mes.isoformat(),
+                                        "recorrente_mensal": True,
+                                        "concluido": False,
+                                    }).execute()
+
+                                supabase.table("lembretes").update(
+                                    {"concluido": True}
+                                ).eq(
+                                    "id",
+                                    item["id"],
+                                ).execute()
+
+                                st.success("Lembrete concluído!")
+                                st.rerun()
+
+                        else:
+                            st.caption("🔒 Somente o criador")
+
+                st.markdown(
+                    "<div class='soft-divider'></div>",
+                    unsafe_allow_html=True,
+                )
+
+        else:
+            st.info("Nenhum lembrete encontrado.")
+
+    except Exception as e:
+        st.error(f"Erro ao carregar o mural: {e}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ============================================================
+# ABA 4 — DASHBOARD
+# ============================================================
+elif menu == "📊  Dashboard":
+
+    st.markdown(textwrap.dedent(f"""
+    <div class="card">
+        <div class="card-title">📊 &nbsp;Dashboard de Desempenho — {usuario_ativo}</div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
+            Acompanhamento das tarefas e lembretes individuais.
+        </div>
+    """), unsafe_allow_html=True)
+
+    try:
+        res_dash = (
+            supabase
+            .table("lembretes")
+            .select("*")
+            .eq("usuario", usuario_ativo)
+            .execute()
+        )
+
+        if res_dash.data:
+
+            df_dash = pd.DataFrame(res_dash.data)
+
+            total_tarefas = len(df_dash)
+            concluidas = len(
+                df_dash[df_dash["concluido"] == True]
+            )
+            pendentes = total_tarefas - concluidas
+
+            taxa_sucesso = (
+                concluidas / total_tarefas * 100
+                if total_tarefas > 0
+                else 0.0
+            )
+
+            m1, m2, m3, m4 = st.columns(4)
+
+            m1.metric(
+                "Total de Lembretes",
+                total_tarefas,
+            )
+
+            m2.metric(
+                "Concluídos",
+                concluidas,
+            )
+
+            m3.metric(
+                "Pendentes",
+                pendentes,
+            )
+
+            m4.metric(
+                "Taxa de Cumprimento",
+                f"{taxa_sucesso:.1f}%",
+            )
+
+            st.markdown(
+                "<div class='soft-divider'></div>",
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(
+                "**Desempenho Visual**",
+            )
+
+            st.progress(
+                min(taxa_sucesso / 100, 1.0)
+            )
+
+            if taxa_sucesso == 100:
+                st.success(
+                    "Parabéns! Todas as tarefas foram concluídas!"
+                )
+            elif taxa_sucesso >= 70:
+                st.info(
+                    "Excelente ritmo de entregas no setor!"
+                )
+            else:
+                st.warning(
+                    "Atenção aos lembretes pendentes."
+                )
+
+        else:
+            st.info(
+                "Nenhum dado registrado para gerar métricas."
+            )
+
+    except Exception as e:
+        st.error(f"Erro ao gerar dashboard: {e}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ============================================================
+# ABA 5 — GERENCIAR EQUIPE
+# ============================================================
+elif menu == "⚙️  Gerenciar Equipe":
+
+    st.markdown(textwrap.dedent("""
+    <div class="card">
+        <div class="card-title">⚙️ &nbsp;Gerenciar Membros do DP</div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
+            Cadastre novos membros que poderão utilizar o sistema.
+        </div>
+    """), unsafe_allow_html=True)
+
+    novo_nome = st.text_input(
+        "Nome do novo colaborador",
+        placeholder="Digite o nome",
+    ).upper()
+
+    if st.button(
+        "➕  Adicionar à Equipe",
+        type="primary",
+    ):
+        if novo_nome:
+
+            try:
+                supabase.table("colaboradores").insert({
+                    "nome": novo_nome
+                }).execute()
+
+                st.success(
+                    f"{novo_nome} adicionado com sucesso!"
+                )
+
+                st.cache_data.clear()
+                st.rerun()
+
+            except Exception:
+                st.error(
+                    "Nome já cadastrado ou erro ao salvar."
+                )
+
+        else:
+            st.warning(
+                "Digite o nome do colaborador."
+            )
+
+    st.markdown("</div>", unsafe_allow_html=True)
