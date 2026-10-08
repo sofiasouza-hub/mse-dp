@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# CSS — VISUAL DA REFERÊNCIA
+# CSS — VISUAL DA REFERÊNCIA (COM CORREÇÃO TOTAL DE FUNDO BRANCO)
 # ============================================================
 st.markdown(textwrap.dedent("""
 <style>
@@ -92,18 +92,6 @@ div[data-testid="stVerticalBlock"] {
     font-weight: 600;
 }
 
-/* ---------- USUÁRIO ---------- */
-.user-row {
-    margin-top: -1px;
-    margin-bottom: 9px;
-}
-
-.user-label {
-    color: #64748b;
-    font-size: 11px;
-    margin-bottom: -7px;
-}
-
 /* ---------- MENU PRINCIPAL ---------- */
 div[role="radiogroup"] {
     gap: 7px !important;
@@ -159,13 +147,21 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin-bottom: 11px;
 }
 
-/* ---------- FORÇA FUNDO BRANCO NOS CONTAINERS DO STREAMLIT ---------- */
-div[data-testid="stVerticalBlockBorderWrapper"] {
+/* ---------- CONTAINERS NATIVOS STREAMLIT COM FUNDO BRANCO ---------- */
+div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    background-color: #ffffff !important;
     background: #ffffff !important;
     border: 1px solid #e5e7eb !important;
     border-radius: 7px !important;
     box-shadow: 0 1px 4px rgba(15,23,42,.045) !important;
-    padding: 16px !important;
+}
+
+/* ---------- SELECTBOX DO FILTRO ---------- */
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    border-color: #dbe3ec !important;
 }
 
 /* ---------- NOVO LEMBRETE ---------- */
@@ -197,7 +193,6 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     border-radius: 5px !important;
     padding: 0 12px !important;
     color: #334155 !important;
-    font-size: 11px !important;
     background: #ffffff !important;
 }
 
@@ -954,7 +949,7 @@ elif menu == "📅  Calendário Coletivo":
 
 
 # ============================================================
-# ABA 3 — MURAL DA EQUIPE (SISTEMA DE CONTAINER NATIVO BRANCO)
+# ABA 3 — MURAL DA EQUIPE (CONTAINER NATIVO COM FUNDO BRANCO FORÇADO)
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
