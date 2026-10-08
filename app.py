@@ -393,10 +393,41 @@ with aba4:
         total_tarefas = len(df_dash)
         concluidas = len(df_dash[df_dash['concluido'] == True])
         pendentes = total_tarefas - concluidas
-        taxa_sucesso = (concluidas / total_tarefas * 100) if total_tarefas > 0 else 0
+        taxa_sucesso = (concluidas / total_tarefas * 100) if total_tarefas > 0 else 0.0
         
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Total de Lembretes", total_tarefas)
         m2.metric("Concluídos", concluidas)
         m3.metric("Pendentes", pendentes)
-        m4.metric("Taxa de Cumprimento", f"{taxa
+        m4.metric("Taxa de Cumprimento", f"{taxa_sucesso:.1f}%")
+        
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown("##### Desempenho Visual")
+        st.progress(taxa_sucesso / 100)
+        
+        if taxa_sucesso == 100:
+            st.balloons()
+            st.success("Parabéns! Todas as tarefas do mês foram concluídas!")
+        elif taxa_sucesso >= 70:
+            st.info("Excelente ritmo de entregas no setor!")
+        else:
+            st.warning("Atenção aos lembretes pendentes para o fechamento do mês.")
+    else:
+        st.info("Nenhum dado registrado para gerar métricas de desempenho ainda.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- ABA 5: GERENCIAR EQUIPE ---
+with aba5:
+    st.markdown('<div class="card-box">', unsafe_allow_html=True)
+    st.subheader("⚙️ Gerenciar Membros do DP")
+    novo_nome = st.text_input("Nome do novo colaborador").upper()
+    if st.button("➕ Adicionar à Equipe"):
+        if novo_nome:
+            try:
+                supabase.table("colaboradores").insert({"nome": novo_nome}).execute()
+                st.success(f"{novo_nome} adicionado com sucesso!")
+                st.cache_data.clear()
+                st.rerun()
+            except Exception:
+                st.error("Nome já cadastrado ou erro ao salvar.")
+    st.markdown('</div>', unsafe_allow_html=True)
