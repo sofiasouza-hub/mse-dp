@@ -7,7 +7,6 @@ import textwrap
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 
-
 # ============================================================
 # CONFIGURAÇÃO
 # ============================================================
@@ -18,628 +17,724 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-
 # ============================================================
-# CSS
+# CSS — VISUAL DA REFERÊNCIA
 # ============================================================
-st.markdown(
-    textwrap.dedent(
-        """
-        <style>
-
-        /* ====================================================
-           BASE
-        ==================================================== */
-
-        .stApp {
-            background: #f3f4f6;
-            color: #1e293b;
-        }
-
-        .block-container {
-            max-width: 1240px;
-            padding: 16px 24px 28px 24px;
-        }
-
-        #MainMenu,
-        footer,
-        header {
-            visibility: hidden;
-        }
-
-        div[data-testid="stVerticalBlock"] {
-            gap: 0.55rem;
-        }
-
-
-        /* ====================================================
-           TOPBAR
-        ==================================================== */
-
-        .topbar {
-            height: 58px;
-            background: #1e293b;
-            border-radius: 6px;
-            padding: 0 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, .12);
-            margin-bottom: 12px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-mse {
-            color: #ef233c;
-            font-size: 27px;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-        }
-
-        .brand-divider {
-            color: #64748b;
-            font-size: 21px;
-        }
-
-        .brand-dp {
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .top-status {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: #e2e8f0;
-            font-size: 12px;
-        }
-
-        .connected {
-            color: #4ade80;
-            font-weight: 600;
-        }
-
-
-        /* ====================================================
-           USUÁRIO
-        ==================================================== */
-
-        .user-row {
-            margin-top: -1px;
-            margin-bottom: 9px;
-        }
-
-        .user-label {
-            color: #64748b;
-            font-size: 11px;
-            margin-bottom: -7px;
-        }
-
-
-        /* ====================================================
-           MENU PRINCIPAL
-           SOMENTE O RADIO DO MENU É AFETADO
-        ==================================================== */
-
-        div.st-key-main_menu {
-            margin-top: 2px !important;
-            margin-bottom: 13px !important;
-        }
-
-        div.st-key-main_menu div[role="radiogroup"] {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-            align-items: center !important;
-            gap: 8px !important;
-            background: transparent !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        div.st-key-main_menu div[role="radiogroup"] > label {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-
-            min-height: 38px !important;
-            height: 38px !important;
-
-            width: auto !important;
-            min-width: 0 !important;
-
-            margin: 0 !important;
-            padding: 0 14px !important;
-
-            box-sizing: border-box !important;
-
-            background: #ffffff !important;
-            border: 1px solid #d9dee7 !important;
-            border-radius: 5px !important;
-
-            color: #334155 !important;
-
-            font-size: 12px !important;
-            font-weight: 600 !important;
-
-            cursor: pointer !important;
-
-            box-shadow: 0 1px 2px rgba(15, 23, 42, .04) !important;
-
-            transition:
-                border-color .15s ease,
-                color .15s ease,
-                box-shadow .15s ease !important;
-        }
-
-        /* Remove a bolinha nativa do radio */
-        div.st-key-main_menu div[role="radiogroup"] > label > div:first-child {
-            display: none !important;
-            width: 0 !important;
-            min-width: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        div.st-key-main_menu div[role="radiogroup"] > label input[type="radio"] {
-            display: none !important;
-        }
-
-        /* Texto */
-        div.st-key-main_menu div[role="radiogroup"] > label p,
-        div.st-key-main_menu div[role="radiogroup"] > label span {
-            color: inherit !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            font-size: 12px !important;
-            line-height: 1.2 !important;
-        }
-
-        /* Hover */
-        div.st-key-main_menu div[role="radiogroup"] > label:hover {
-            background: #ffffff !important;
-            border-color: #dc2638 !important;
-            color: #dc2638 !important;
-        }
-
-        /* Aba selecionada */
-        div.st-key-main_menu div[role="radiogroup"] > label:has(input:checked) {
-            background: #ffffff !important;
-            border: 2px solid #dc2638 !important;
-            color: #dc2638 !important;
-            font-weight: 700 !important;
-            box-shadow: none !important;
-            padding: 0 13px !important;
-        }
-
-
-        /* ====================================================
-           CARDS
-        ==================================================== */
-
-        .card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 7px;
-            padding: 15px 18px;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, .045);
-            margin-bottom: 12px;
-        }
-
-        .card-title {
-            color: #1e3a5f;
-            font-size: 15px;
-            font-weight: 750;
-            margin-bottom: 11px;
-        }
-
-        .card-title-red {
-            color: #dc2638;
-            font-size: 14px;
-            font-weight: 750;
-        }
-
-
-        /* ====================================================
-           FORMULÁRIO DE LEMBRETE
-        ==================================================== */
-
-        .st-key-reminder_form {
-            background: #ffffff !important;
-            border: 1px solid #e4e9ef !important;
-            border-radius: 6px !important;
-            padding: 13px 16px 12px 16px !important;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, .045) !important;
-            margin-bottom: 12px !important;
-        }
-
-        .st-key-reminder_form .reminder-form-title {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: #17395f;
-            font-size: 14px;
-            font-weight: 800;
-            margin: 0 0 10px 0;
-        }
-
-        .st-key-reminder_form div[data-testid="stTextInput"] {
-            margin-bottom: 9px !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stTextInput"] input {
-            height: 38px !important;
-            min-height: 38px !important;
-            border: 1px solid #dce5ee !important;
-            border-radius: 5px !important;
-            padding: 0 12px !important;
-            color: #334155 !important;
-            font-size: 11px !important;
-            background: #ffffff !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stTextInput"] input::placeholder {
-            color: #9aaec3 !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stDateInput"],
-        .st-key-reminder_form div[data-testid="stTimeInput"] {
-            display: block !important;
-            margin-bottom: 9px !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stDateInput"] input,
-        .st-key-reminder_form div[data-testid="stTimeInput"] input {
-            height: 38px !important;
-            min-height: 38px !important;
-            border: 1px solid #dce5ee !important;
-            border-radius: 5px !important;
-            padding: 0 12px !important;
-            color: #334155 !important;
-            font-size: 11px !important;
-            background: #ffffff !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stCheckbox"] {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-        }
-
-        .st-key-reminder_form div[data-testid="stCheckbox"] label {
-            color: #526b86 !important;
-            font-size: 11px !important;
-        }
-
-        .st-key-reminder_form .stButton {
-            display: flex !important;
-            justify-content: flex-end !important;
-        }
-
-        .st-key-reminder_form .stButton > button {
-            width: 168px !important;
-            min-height: 36px !important;
-            height: 36px !important;
-            border-radius: 5px !important;
-            font-size: 11px !important;
-            font-weight: 700 !important;
-            margin-top: 0 !important;
-        }
-
-
-        /* ====================================================
-           INPUTS
-        ==================================================== */
-
-        div[data-testid="stTextInput"] input,
-        div[data-testid="stDateInput"] input,
-        div[data-testid="stTimeInput"] input,
-        div[data-testid="stSelectbox"] div[data-baseweb="select"] {
-            border: 1px solid #dbe3ec !important;
-            border-radius: 5px !important;
-            background: #ffffff !important;
-            min-height: 35px !important;
-            font-size: 12px !important;
-        }
-
-        div[data-testid="stTextInput"] input::placeholder {
-            color: #a0aec0 !important;
-        }
-
-
-        /* ====================================================
-           BOTÕES
-        ==================================================== */
-
-        .stButton > button {
-            border-radius: 5px !important;
-            border: 1px solid #dbe3ec !important;
-            min-height: 35px !important;
-            font-size: 12px !important;
-            font-weight: 650 !important;
-            background: #ffffff !important;
-            color: #334155 !important;
-        }
-
-        .stButton > button[kind="primary"] {
-            background: #dc2638 !important;
-            border-color: #dc2638 !important;
-            color: white !important;
-        }
-
-        .stButton > button:hover {
-            border-color: #dc2638 !important;
-            color: #dc2638 !important;
-        }
-
-        .stButton > button[kind="primary"]:hover {
-            color: white !important;
-            background: #c81f32 !important;
-        }
-
-
-        /* ====================================================
-           CHECKBOX
-        ==================================================== */
-
-        div[data-testid="stCheckbox"] label {
-            font-size: 11px !important;
-            color: #64748b !important;
-        }
-
-
-        /* ====================================================
-           CALENDÁRIO
-        ==================================================== */
-
-        .calendar-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 7px;
-            padding: 15px 16px;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, .045);
-        }
-
-        .calendar-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #1e3a5f;
-            font-size: 14px;
-            font-weight: 750;
-            margin-bottom: 13px;
-        }
-
-        .calendar-arrow {
-            color: #64748b;
-            font-size: 16px;
-        }
-
-        .cal-grid-clickable {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-        }
-
-        .cal-weekday-clickable {
-            color: #94a3b8;
-            font-size: 9px;
-            font-weight: 700;
-            padding-bottom: 5px;
-        }
-
-        .cal-empty {
-            min-height: 31px;
-        }
-
-        .cal-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 31px;
-            color: #475569 !important;
-            text-decoration: none !important;
-            font-size: 10px;
-            line-height: 21px;
-            border-radius: 50%;
-        }
-
-        .cal-link:hover {
-            color: #dc2638 !important;
-        }
-
-        .cal-number {
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            border-radius: 50%;
-        }
-
-        .cal-number.today {
-            background: #dc2638;
-            color: #ffffff;
-            font-weight: 800;
-        }
-
-        .cal-number.selected {
-            outline: 2px solid #dc2638;
-            outline-offset: 1px;
-            font-weight: 800;
-        }
-
-        .cal-dot-red {
-            width: 4px;
-            height: 4px;
-            background: #dc2638;
-            border-radius: 50%;
-            margin-top: 1px;
-        }
-
-        .calendar-selected {
-            margin-top: 10px;
-            background: #f8fafc;
-            border: 1px solid #e5e7eb;
-            border-left: 3px solid #dc2638;
-            border-radius: 6px;
-            padding: 10px 11px;
-        }
-
-        .calendar-selected-title {
-            color: #1e3a5f;
-            font-size: 12px;
-            font-weight: 800;
-            margin-bottom: 7px;
-        }
-
-        .calendar-event {
-            color: #475569;
-            font-size: 11px;
-            padding: 4px 0;
-            border-bottom: 1px solid #edf2f7;
-        }
-
-        .calendar-event:last-child {
-            border-bottom: none;
-        }
-
-
-        /* ====================================================
-           TABELA DE LEMBRETES
-        ==================================================== */
-
-        .reminder-table {
-            width: 100%;
-            margin-top: 2px;
-            border-collapse: collapse;
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-        }
-
-        .reminder-table th {
-            background: #f1f5f9;
-            color: #64748b;
-            text-align: left;
-            font-size: 10px;
-            font-weight: 750;
-            padding: 8px 9px;
-        }
-
-        .reminder-table td {
-            color: #334155;
-            padding: 9px;
-            border-bottom: 1px solid #edf2f7;
-        }
-
-        .reminder-table td:nth-child(2),
-        .reminder-table th:nth-child(2) {
-            width: 80px;
-        }
-
-        .reminder-table td:nth-child(4),
-        .reminder-table th:nth-child(4) {
-            text-align: center;
-            width: 90px;
-        }
-
-
-        /* ====================================================
-           BADGES
-        ==================================================== */
-
-        .badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: 750;
-        }
-
-        .badge-pendente {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .badge-concluido {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-
-        /* ====================================================
-           MÉTRICAS
-        ==================================================== */
-
-        div[data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 7px;
-            padding: 12px;
-        }
-
-        div[data-testid="stMetricLabel"] {
-            font-size: 11px !important;
-        }
-
-
-        /* ====================================================
-           TABELAS NATIVAS
-        ==================================================== */
-
-        div[data-testid="stDataFrame"] {
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-
-        /* ====================================================
-           DIVISÓRIA
-        ==================================================== */
-
-        .soft-divider {
-            height: 1px;
-            background: #edf2f7;
-            margin: 8px 0 12px;
-        }
-
-
-        /* ====================================================
-           RESPONSIVO
-        ==================================================== */
-
-        @media (max-width: 900px) {
-
-            .block-container {
-                padding: 12px;
-            }
-
-            .top-status {
-                gap: 8px;
-                font-size: 10px;
-            }
-
-            div.st-key-main_menu div[role="radiogroup"] {
-                flex-wrap: wrap !important;
-            }
-        }
-
-        </style>
-        """
-    ),
-    unsafe_allow_html=True,
-)
+st.markdown(textwrap.dedent("""
+<style>
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+.stApp {
+    background: #f3f4f6;
+    color: #1e293b;
+}
+
+.block-container {
+    max-width: 1240px;
+    padding: 16px 24px 28px 24px;
+}
+
+#MainMenu,
+footer,
+header {
+    visibility: hidden;
+}
+
+/* Remove espaços exagerados do Streamlit */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.55rem;
+}
+
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+
+.topbar {
+    height: 58px;
+    background: #1e293b;
+    border-radius: 6px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .12);
+    margin-bottom: 12px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-mse {
+    color: #ef233c;
+    font-size: 27px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+}
+
+.brand-divider {
+    color: #64748b;
+    font-size: 21px;
+}
+
+.brand-dp {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.top-status {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #e2e8f0;
+    font-size: 12px;
+}
+
+.connected {
+    color: #4ade80;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   USUÁRIO
+   ============================================================ */
+
+.user-row {
+    margin-top: -1px;
+    margin-bottom: 9px;
+}
+
+.user-label {
+    color: #64748b;
+    font-size: 11px;
+    margin-bottom: -7px;
+}
+
+
+/* ============================================================
+   MENU SUPERIOR
+   ============================================================ */
+
+/* Área geral do componente do menu */
+div[data-testid="stRadio"] {
+    margin-top: 4px !important;
+    margin-bottom: 13px !important;
+}
+
+/* Grupo das opções */
+div[data-testid="stRadio"] div[role="radiogroup"] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    background: transparent !important;
+}
+
+/* Cada opção vira uma caixa */
+div[data-testid="stRadio"] div[role="radiogroup"] > label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-height: 38px !important;
+    height: 38px !important;
+
+    padding: 0 15px !important;
+    margin: 0 !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d9dee7 !important;
+    border-radius: 5px !important;
+
+    box-sizing: border-box !important;
+
+    color: #475569 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04) !important;
+
+    transition:
+        border-color .15s ease,
+        color .15s ease,
+        box-shadow .15s ease !important;
+}
+
+/* Esconde completamente a bolinha do radio */
+div[data-testid="stRadio"] div[role="radiogroup"] > label input[type="radio"] {
+    display: none !important;
+}
+
+/* Remove o espaço reservado ao radio */
+div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+
+/* Texto dentro da caixa */
+div[data-testid="stRadio"] div[role="radiogroup"] > label p {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font-size: 12px !important;
+    font-weight: inherit !important;
+}
+
+/* Hover */
+div[data-testid="stRadio"] div[role="radiogroup"] > label:hover {
+    border-color: #dc2638 !important;
+    color: #dc2638 !important;
+    background: #ffffff !important;
+}
+
+/* ============================================================
+   MENU — ITEM SELECIONADO
+   ============================================================ */
+
+div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input[type="radio"]:checked) {
+    background: #ffffff !important;
+    border: 2px solid #dc2638 !important;
+    color: #dc2638 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(220, 38, 56, .12) !important;
+}
+
+/* Texto da opção selecionada */
+div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input[type="radio"]:checked) p {
+    color: #dc2638 !important;
+    font-weight: 700 !important;
+}
+
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 15px 18px;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, .045);
+    margin-bottom: 12px;
+}
+
+.card-title {
+    color: #1e3a5f;
+    font-size: 15px;
+    font-weight: 750;
+    margin-bottom: 11px;
+}
+
+.card-title-red {
+    color: #dc2638;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+
+/* ============================================================
+   NOVO LEMBRETE
+   ============================================================ */
+
+.st-key-reminder_form {
+    background: #ffffff !important;
+    border: 1px solid #e4e9ef !important;
+    border-radius: 6px !important;
+    padding: 13px 16px 12px 16px !important;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, .045) !important;
+    margin-bottom: 12px !important;
+}
+
+.st-key-reminder_form .reminder-form-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #17395f;
+    font-size: 14px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+}
+
+.st-key-reminder_form .reminder-form-title-icon {
+    font-size: 15px;
+    line-height: 1;
+    filter: saturate(.65);
+}
+
+.st-key-reminder_form div[data-testid="stTextInput"] {
+    margin-bottom: 9px !important;
+}
+
+.st-key-reminder_form div[data-testid="stTextInput"] input {
+    height: 38px !important;
+    min-height: 38px !important;
+    border: 1px solid #dce5ee !important;
+    border-radius: 5px !important;
+    padding: 0 12px !important;
+    color: #334155 !important;
+    font-size: 11px !important;
+    background: #ffffff !important;
+}
+
+.st-key-reminder_form div[data-testid="stTextInput"] input::placeholder {
+    color: #9aaec3 !important;
+}
+
+/* Data e hora permanecem como componentes normais do Streamlit */
+.st-key-reminder_form div[data-testid="stDateInput"],
+.st-key-reminder_form div[data-testid="stTimeInput"] {
+    display: block !important;
+    margin-bottom: 9px !important;
+}
+
+.st-key-reminder_form div[data-testid="stDateInput"] input,
+.st-key-reminder_form div[data-testid="stTimeInput"] input {
+    height: 38px !important;
+    min-height: 38px !important;
+    border: 1px solid #dce5ee !important;
+    border-radius: 5px !important;
+    padding: 0 12px !important;
+    color: #334155 !important;
+    font-size: 11px !important;
+    background: #ffffff !important;
+}
+
+/* Mantém a linha inferior compacta */
+.st-key-reminder_form div[data-testid="stCheckbox"] {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.st-key-reminder_form div[data-testid="stCheckbox"] label {
+    color: #526b86 !important;
+    font-size: 11px !important;
+}
+
+.st-key-reminder_form .stButton {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+.st-key-reminder_form .stButton > button {
+    width: 168px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    margin-top: 0 !important;
+}
+
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+div[data-testid="stTextInput"] input,
+div[data-testid="stDateInput"] input,
+div[data-testid="stTimeInput"] input,
+div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    border: 1px solid #dbe3ec !important;
+    border-radius: 5px !important;
+    background: #ffffff !important;
+    min-height: 35px !important;
+    font-size: 12px !important;
+}
+
+div[data-testid="stTextInput"] input::placeholder {
+    color: #a0aec0 !important;
+}
+
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+
+.stButton > button {
+    border-radius: 5px !important;
+    border: 1px solid #dbe3ec !important;
+    min-height: 35px !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+    background: #ffffff !important;
+    color: #334155 !important;
+}
+
+.stButton > button[kind="primary"] {
+    background: #dc2638 !important;
+    border-color: #dc2638 !important;
+    color: white !important;
+}
+
+.stButton > button:hover {
+    border-color: #dc2638 !important;
+    color: #dc2638 !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    color: white !important;
+    background: #c81f32 !important;
+}
+
+
+/* ============================================================
+   CHECKBOX
+   ============================================================ */
+
+div[data-testid="stCheckbox"] label {
+    font-size: 11px !important;
+    color: #64748b !important;
+}
+
+
+/* ============================================================
+   PRÓXIMO LEMBRETE
+   ============================================================ */
+
+.next-card {
+    background: #fff7f7;
+    border: 1px solid #f7d9dc;
+    border-left: 3px solid #dc2638;
+    border-radius: 7px;
+    padding: 15px 17px;
+    margin-bottom: 12px;
+}
+
+.next-label {
+    color: #dc2638;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.next-time {
+    color: #dc2638;
+    font-size: 25px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 7px;
+}
+
+.next-text {
+    color: #334155;
+    font-size: 12px;
+    font-weight: 650;
+    margin-top: 4px;
+}
+
+
+/* ============================================================
+   CALENDÁRIO
+   ============================================================ */
+
+.calendar-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 15px 16px;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, .045);
+}
+
+.calendar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #1e3a5f;
+    font-size: 14px;
+    font-weight: 750;
+    margin-bottom: 13px;
+}
+
+.calendar-arrow {
+    color: #64748b;
+    font-size: 16px;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+}
+
+.cal-weekday {
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 700;
+    padding-bottom: 4px;
+}
+
+.cal-day {
+    min-height: 25px;
+    font-size: 10px;
+    color: #475569;
+    padding-top: 2px;
+}
+
+.cal-day-number {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.cal-today {
+    background: #dc2638;
+    color: white;
+    font-weight: 750;
+}
+
+.cal-dot {
+    width: 4px;
+    height: 4px;
+    background: #dc2638;
+    border-radius: 50%;
+    margin: 1px auto 0;
+}
+
+
+/* ============================================================
+   TABELA
+   ============================================================ */
+
+.reminder-table {
+    width: 100%;
+    margin-top: 2px;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+}
+
+.reminder-table th {
+    background: #f1f5f9;
+    color: #64748b;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 750;
+    padding: 8px 9px;
+}
+
+.reminder-table td {
+    color: #334155;
+    padding: 9px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.reminder-table td:nth-child(2),
+.reminder-table th:nth-child(2) {
+    width: 80px;
+}
+
+.reminder-table td:nth-child(4),
+.reminder-table th:nth-child(4) {
+    text-align: center;
+    width: 90px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.badge-pendente {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-concluido {
+    background: #d1fae5;
+    color: #059669;
+}
+
+
+/* ============================================================
+   MÉTRICAS
+   ============================================================ */
+
+div[data-testid="stMetric"] {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 12px;
+}
+
+div[data-testid="stMetricLabel"] {
+    font-size: 11px !important;
+}
+
+
+/* ============================================================
+   TABELAS NATIVAS
+   ============================================================ */
+
+div[data-testid="stDataFrame"] {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   FORMULÁRIO DO LEMBRETE
+   ============================================================ */
+
+.reminder-form-title {
+    color: #123b66;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 2px 0 10px 0;
+}
+
+div[data-testid="stTextInput"] input {
+    min-height: 40px !important;
+}
+
+
+/* ============================================================
+   CALENDÁRIO CLICÁVEL
+   ============================================================ */
+
+.cal-grid-clickable {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+}
+
+.cal-weekday-clickable {
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+.cal-empty {
+    min-height: 31px;
+}
+
+.cal-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 31px;
+    color: #475569 !important;
+    text-decoration: none !important;
+    font-size: 10px;
+    line-height: 21px;
+    border-radius: 50%;
+}
+
+.cal-link:hover {
+    color: #dc2638 !important;
+}
+
+.cal-number {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+}
+
+.cal-number.today {
+    background: #dc2638;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.cal-number.selected {
+    outline: 2px solid #dc2638;
+    outline-offset: 1px;
+    font-weight: 800;
+}
+
+.cal-dot-red {
+    width: 4px;
+    height: 4px;
+    background: #dc2638;
+    border-radius: 50%;
+    margin-top: 1px;
+}
+
+.calendar-selected {
+    margin-top: 10px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid #dc2638;
+    border-radius: 6px;
+    padding: 10px 11px;
+}
+
+.calendar-selected-title {
+    color: #1e3a5f;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.calendar-event {
+    color: #475569;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.calendar-event:last-child {
+    border-bottom: none;
+}
+
+
+/* ============================================================
+   DIVISÓRIA
+   ============================================================ */
+
+.soft-divider {
+    height: 1px;
+    background: #edf2f7;
+    margin: 8px 0 12px;
+}
+
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .block-container {
+        padding: 12px;
+    }
+
+    .top-status {
+        gap: 8px;
+        font-size: 10px;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] {
+        flex-wrap: wrap !important;
+    }
+}
+
+</style>
+"""), unsafe_allow_html=True)
 
 
 # ============================================================
 # SUPABASE
 # ============================================================
-
 @st.cache_resource
 def init_supabase() -> Client:
     url = st.secrets["SUPABASE_URL"]
@@ -653,7 +748,6 @@ supabase = init_supabase()
 # ============================================================
 # DADOS
 # ============================================================
-
 @st.cache_data(ttl=5)
 def get_colaboradores():
     try:
@@ -665,10 +759,7 @@ def get_colaboradores():
             .execute()
         )
 
-        nomes = [
-            item["nome"]
-            for item in res.data
-        ] if res.data else []
+        nomes = [item["nome"] for item in res.data] if res.data else []
 
         if not nomes:
             nomes = [
@@ -678,7 +769,7 @@ def get_colaboradores():
                 "ISAAC",
                 "MARIA",
                 "NATALIA",
-                "SOFIA",
+                "SOFIA"
             ]
 
         return nomes
@@ -691,7 +782,7 @@ def get_colaboradores():
             "ISAAC",
             "MARIA",
             "NATALIA",
-            "SOFIA",
+            "SOFIA"
         ]
 
 
@@ -701,40 +792,31 @@ lista_equipe = get_colaboradores()
 # ============================================================
 # TOPBAR
 # ============================================================
-
-st.html(
-    """
-    <div class="topbar">
-        <div class="brand">
-            <span class="brand-mse">MSE</span>
-            <span class="brand-divider">|</span>
-            <span class="brand-dp">DP</span>
-        </div>
-
-        <div class="top-status">
-            <span class="connected">● Nuvem Conectada</span>
-            <span>|</span>
-            <span>👤 Usuário: Sofia</span>
-        </div>
+st.html("""
+<div class="topbar">
+    <div class="brand">
+        <span class="brand-mse">MSE</span>
+        <span class="brand-divider">|</span>
+        <span class="brand-dp">DP</span>
     </div>
-    """
-)
+
+    <div class="top-status">
+        <span class="connected">● Nuvem Conectada</span>
+        <span>|</span>
+        <span>👤 Usuário: Sofia</span>
+    </div>
+</div>
+""")
 
 
 # ============================================================
 # USUÁRIO ATIVO
 # ============================================================
-
-idx_padrao = (
-    lista_equipe.index("SOFIA")
-    if "SOFIA" in lista_equipe
-    else 0
-)
+idx_padrao = lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0
 
 col_user, col_space = st.columns([0.55, 4.45])
 
 with col_user:
-
     usuario_ativo = st.selectbox(
         "Usuário ativo",
         options=lista_equipe,
@@ -749,7 +831,6 @@ if not usuario_ativo:
 # ============================================================
 # MENU PRINCIPAL
 # ============================================================
-
 opcoes_menu = [
     "🔔  Meus Lembretes",
     "📅  Calendário Coletivo",
@@ -763,25 +844,19 @@ menu = st.radio(
     opcoes_menu,
     horizontal=True,
     label_visibility="collapsed",
-    key="main_menu",
 )
 
-st.markdown(
-    "<div style='height:2px'></div>",
-    unsafe_allow_html=True,
-)
+st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
 
 
 # ============================================================
-# FUNÇÃO — CALENDÁRIO COLETIVO
+# FUNÇÕES — CALENDÁRIO COLETIVO
 # ============================================================
-
 def montar_calendario_coletivo(
     hoje,
     eventos,
-    dia_selecionado=None,
+    dia_selecionado=None
 ):
-
     dias_semana = [
         "Seg",
         "Ter",
@@ -789,7 +864,7 @@ def montar_calendario_coletivo(
         "Qui",
         "Sex",
         "Sáb",
-        "Dom",
+        "Dom"
     ]
 
     html = '<div class="cal-grid-clickable">'
@@ -803,7 +878,7 @@ def montar_calendario_coletivo(
 
     cal = calendar.monthcalendar(
         hoje.year,
-        hoje.month,
+        hoje.month
     )
 
     for semana in cal:
@@ -811,20 +886,12 @@ def montar_calendario_coletivo(
         for dia in semana:
 
             if dia == 0:
-
-                html += (
-                    '<div class="cal-empty"></div>'
-                )
-
+                html += '<div class="cal-empty"></div>'
                 continue
 
             tem_evento = dia in eventos
-
             eh_hoje = dia == hoje.day
-
-            esta_selecionado = (
-                dia == dia_selecionado
-            )
+            esta_selecionado = dia == dia_selecionado
 
             classes = ["cal-number"]
 
@@ -854,9 +921,7 @@ def montar_calendario_coletivo(
                 href="{href}"
                 title="Ver compromissos do dia {dia}"
             >
-                <div class="{numero}">
-                    {dia}
-                </div>
+                <div class="{numero}">{dia}</div>
                 {dot}
             </a>
             """
@@ -869,38 +934,31 @@ def montar_calendario_coletivo(
 # ============================================================
 # ABA 1 — MEUS LEMBRETES
 # ============================================================
-
 if menu == "🔔  Meus Lembretes":
 
     col_principal, col_lateral = st.columns(
         [2.35, 1],
-        gap="medium",
+        gap="medium"
     )
 
-
-    # ========================================================
+    # --------------------------------------------------------
     # COLUNA PRINCIPAL
-    # ========================================================
-
+    # --------------------------------------------------------
     with col_principal:
 
-        # ====================================================
-        # NOVO LEMBRETE
-        # ====================================================
-
+        # ----------------------------------------------------
+        # CARD — NOVO LEMBRETE
+        # ----------------------------------------------------
         with st.container(
             border=True,
-            key="reminder_form",
+            key="reminder_form"
         ):
 
-            st.markdown(
-                """
-                <div class="reminder-form-title">
-                    💬 &nbsp;O que você precisa lembrar?
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+            st.markdown("""
+            <div class="reminder-form-title">
+                💬 &nbsp;O que você precisa lembrar?
+            </div>
+            """, unsafe_allow_html=True)
 
             texto_lembrete = st.text_input(
                 "Lembrete",
@@ -911,7 +969,7 @@ if menu == "🔔  Meus Lembretes":
 
             col_data, col_hora = st.columns(
                 [1, 1],
-                gap="small",
+                gap="small"
             )
 
             with col_data:
@@ -937,7 +995,7 @@ if menu == "🔔  Meus Lembretes":
 
             col_check, col_btn = st.columns(
                 [1.55, 1],
-                gap="small",
+                gap="small"
             )
 
             with col_check:
@@ -975,12 +1033,11 @@ if menu == "🔔  Meus Lembretes":
 
                     try:
 
-                        (
-                            supabase
-                            .table("lembretes")
-                            .insert(dados_insert)
-                            .execute()
-                        )
+                        supabase.table(
+                            "lembretes"
+                        ).insert(
+                            dados_insert
+                        ).execute()
 
                         st.success(
                             "Lembrete agendado com sucesso!"
@@ -1001,10 +1058,9 @@ if menu == "🔔  Meus Lembretes":
                     )
 
 
-        # ====================================================
-        # LEMBRETES AGENDADOS
-        # ====================================================
-
+        # ----------------------------------------------------
+        # CARD — LEMBRETES AGENDADOS
+        # ----------------------------------------------------
         try:
 
             res_lembretes = (
@@ -1021,7 +1077,7 @@ if menu == "🔔  Meus Lembretes":
             res_lembretes = type(
                 "Obj",
                 (),
-                {"data": []},
+                {"data": []}
             )()
 
             st.error(
@@ -1035,10 +1091,7 @@ if menu == "🔔  Meus Lembretes":
             try:
 
                 dt_obj = datetime.fromisoformat(
-                    item["data_hora"].replace(
-                        "Z",
-                        "",
-                    )
+                    item["data_hora"].replace("Z", "")
                 )
 
                 concluido = bool(
@@ -1066,12 +1119,7 @@ if menu == "🔔  Meus Lembretes":
                 )
 
                 lembrete_txt = escape(
-                    str(
-                        item.get(
-                            "conteudo",
-                            "",
-                        )
-                    )
+                    str(item.get("conteudo", ""))
                 )
 
                 linhas_tabela += f"""
@@ -1107,44 +1155,42 @@ if menu == "🔔  Meus Lembretes":
             </tr>
             """
 
-        st.html(
-            f"""
-            <div class="card">
+        st.html(f"""
+        <div class="card">
 
-                <div class="card-title">
-                    📋 &nbsp;Seus Lembretes Agendados
-                </div>
-
-                <table class="reminder-table">
-
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Horário</th>
-                            <th>Lembrete</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {linhas_tabela}
-                    </tbody>
-
-                </table>
-
+            <div class="card-title">
+                📋 &nbsp;Seus Lembretes Agendados
             </div>
-            """
-        )
+
+            <table class="reminder-table">
+
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Lembrete</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {linhas_tabela}
+                </tbody>
+
+            </table>
+
+        </div>
+        """)
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # COLUNA LATERAL — CALENDÁRIO COLETIVO
-    # ========================================================
-
+    # --------------------------------------------------------
     with col_lateral:
 
         hoje = date.today()
 
+        # Somente eventos da tabela notas_calendario
         eventos_coletivos = {}
 
         try:
@@ -1156,9 +1202,7 @@ if menu == "🔔  Meus Lembretes":
                 .execute()
             )
 
-            for nota in (
-                res_col_mes.data or []
-            ):
+            for nota in (res_col_mes.data or []):
 
                 try:
 
@@ -1174,23 +1218,18 @@ if menu == "🔔  Meus Lembretes":
 
                         eventos_coletivos.setdefault(
                             dt_nota.day,
-                            [],
-                        ).append(
-                            {
-                                "nota": str(
-                                    nota.get(
-                                        "nota",
-                                        "",
-                                    )
-                                ),
-                                "autor": str(
-                                    nota.get(
-                                        "autor",
-                                        "Geral",
-                                    )
-                                ),
-                            }
-                        )
+                            []
+                        ).append({
+                            "nota": str(
+                                nota.get("nota", "")
+                            ),
+                            "autor": str(
+                                nota.get(
+                                    "autor",
+                                    "Geral"
+                                )
+                            ),
+                        })
 
                 except Exception:
                     continue
@@ -1199,10 +1238,9 @@ if menu == "🔔  Meus Lembretes":
             pass
 
 
-        # ====================================================
-        # DIA CLICADO
-        # ====================================================
-
+        # ----------------------------------------------------
+        # DIA SELECIONADO
+        # ----------------------------------------------------
         dia_param = st.query_params.get(
             "cal_day"
         )
@@ -1215,10 +1253,7 @@ if menu == "🔔  Meus Lembretes":
                 else None
             )
 
-        except (
-            TypeError,
-            ValueError,
-        ):
+        except (TypeError, ValueError):
 
             dia_selecionado = None
 
@@ -1227,8 +1262,8 @@ if menu == "🔔  Meus Lembretes":
             dia_selecionado is not None
             and (
                 dia_selecionado < 1
-                or dia_selecionado
-                > calendar.monthrange(
+                or dia_selecionado >
+                calendar.monthrange(
                     hoje.year,
                     hoje.month,
                 )[1]
@@ -1251,53 +1286,46 @@ if menu == "🔔  Meus Lembretes":
             "Setembro",
             "Outubro",
             "Novembro",
-            "Dezembro",
+            "Dezembro"
         ]
 
         nome_mes = meses[hoje.month]
 
-        calendario_html = (
-            montar_calendario_coletivo(
-                hoje,
-                eventos_coletivos,
-                dia_selecionado,
-            )
+
+        calendario_html = montar_calendario_coletivo(
+            hoje,
+            eventos_coletivos,
+            dia_selecionado,
         )
 
-        st.html(
-            f"""
-            <div class="calendar-card">
 
-                <div class="calendar-head">
+        st.html(f"""
+        <div class="calendar-card">
 
-                    <span>
-                        📅 &nbsp;{nome_mes} {hoje.year}
-                    </span>
+            <div class="calendar-head">
+                <span>
+                    📅 &nbsp;{nome_mes} {hoje.year}
+                </span>
 
-                    <span class="calendar-arrow">
-                        ‹ &nbsp;&nbsp; ›
-                    </span>
-
-                </div>
-
-                {calendario_html}
-
+                <span class="calendar-arrow">
+                    ‹ &nbsp;&nbsp; ›
+                </span>
             </div>
-            """
-        )
+
+            {calendario_html}
+
+        </div>
+        """)
 
 
-        # ====================================================
+        # ----------------------------------------------------
         # COMPROMISSOS DO DIA
-        # ====================================================
-
+        # ----------------------------------------------------
         if dia_selecionado is not None:
 
-            compromissos = (
-                eventos_coletivos.get(
-                    dia_selecionado,
-                    [],
-                )
+            compromissos = eventos_coletivos.get(
+                dia_selecionado,
+                []
             )
 
             if compromissos:
@@ -1328,75 +1356,67 @@ if menu == "🔔  Meus Lembretes":
                     </div>
                     """
 
-                st.html(
-                    f"""
-                    <div class="calendar-selected">
+                st.html(f"""
+                <div class="calendar-selected">
 
-                        <div class="calendar-selected-title">
-                            📅 Compromissos do dia
-                            {dia_selecionado}
-                        </div>
-
-                        {eventos_html}
-
+                    <div class="calendar-selected-title">
+                        📅 Compromissos do dia
+                        {dia_selecionado}
                     </div>
-                    """
-                )
+
+                    {eventos_html}
+
+                </div>
+                """)
 
             else:
 
-                st.html(
-                    f"""
-                    <div class="calendar-selected">
+                st.html(f"""
+                <div class="calendar-selected">
 
-                        <div class="calendar-selected-title">
-                            📅 Dia {dia_selecionado}
-                        </div>
-
-                        <div
-                            class="calendar-event"
-                            style="color:#94a3b8;"
-                        >
-                            Nenhum compromisso coletivo
-                            marcado para este dia.
-                        </div>
-
+                    <div class="calendar-selected-title">
+                        📅 Dia {dia_selecionado}
                     </div>
-                    """
-                )
+
+                    <div
+                        class="calendar-event"
+                        style="color:#94a3b8;"
+                    >
+                        Nenhum compromisso coletivo
+                        marcado para este dia.
+                    </div>
+
+                </div>
+                """)
 
 
 # ============================================================
 # ABA 2 — CALENDÁRIO COLETIVO
 # ============================================================
-
 elif menu == "📅  Calendário Coletivo":
 
-    st.markdown(
-        textwrap.dedent(
-            """
-            <div class="card">
+    st.markdown(textwrap.dedent("""
+    <div class="card">
 
-                <div class="card-title">
-                    📅 &nbsp;Calendário Coletivo do DP
-                </div>
+        <div class="card-title">
+            📅 &nbsp;Calendário Coletivo do DP
+        </div>
 
-                <div
-                    style="
-                        font-size:11px;
-                        color:#64748b;
-                        margin-bottom:12px;
-                    "
-                >
-                    Avisos, reuniões e eventos gerais
-                    visíveis para todo o setor.
-                </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
+        <div
+            style="
+                font-size:11px;
+                color:#64748b;
+                margin-bottom:12px;
+            "
+        >
+            Avisos, reuniões e eventos gerais
+            visíveis para todo o setor.
+        </div>
+    """), unsafe_allow_html=True)
+
 
     col1, col2 = st.columns([1, 2])
+
 
     with col1:
 
@@ -1405,12 +1425,14 @@ elif menu == "📅  Calendário Coletivo":
             value=date.today(),
         )
 
+
     with col2:
 
         nota_texto = st.text_input(
             "Recado ou compromisso do setor",
             placeholder="Ex: Reunião do DP às 14:00",
         )
+
 
     if st.button(
         "💾  Salvar no Calendário",
@@ -1421,20 +1443,13 @@ elif menu == "📅  Calendário Coletivo":
 
             try:
 
-                (
-                    supabase
-                    .table("notas_calendario")
-                    .insert(
-                        {
-                            "data": str(
-                                dia_selecionado
-                            ),
-                            "autor": usuario_ativo,
-                            "nota": nota_texto,
-                        }
-                    )
-                    .execute()
-                )
+                supabase.table(
+                    "notas_calendario"
+                ).insert({
+                    "data": str(dia_selecionado),
+                    "autor": usuario_ativo,
+                    "nota": nota_texto,
+                }).execute()
 
                 st.success(
                     "Nota gravada com sucesso!"
@@ -1454,24 +1469,21 @@ elif menu == "📅  Calendário Coletivo":
                 "Digite um recado ou compromisso."
             )
 
+
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 
-    st.markdown(
-        textwrap.dedent(
-            """
-            <div class="card">
+    st.markdown(textwrap.dedent("""
+    <div class="card">
 
-                <div class="card-title">
-                    📋 Recados cadastrados
-                </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
+        <div class="section-title">
+            📋 Recados cadastrados
+        </div>
+    """), unsafe_allow_html=True)
+
 
     try:
 
@@ -1491,7 +1503,7 @@ elif menu == "📅  Calendário Coletivo":
                 [
                     "data",
                     "autor",
-                    "nota",
+                    "nota"
                 ]
             ]
 
@@ -1519,35 +1531,32 @@ elif menu == "📅  Calendário Coletivo":
             f"Erro ao carregar recados: {e}"
         )
 
+
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 
 # ============================================================
-# ABA 3 — MURAL DA EQUIPE
+# ABA 3 — MURAL
 # ============================================================
-
 elif menu == "📋  Mural da Equipe":
 
-    st.markdown(
-        textwrap.dedent(
-            """
-            <div class="card">
+    st.markdown(textwrap.dedent("""
+    <div class="card">
 
-                <div class="card-title">
-                    📋 &nbsp;Mural da Equipe
-                </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
+        <div class="card-title">
+            📋 &nbsp;Mural da Equipe
+        </div>
+    """), unsafe_allow_html=True)
+
 
     filtro_pessoa = st.selectbox(
         "Filtrar por colaborador",
         ["Todos"] + lista_equipe,
     )
+
 
     try:
 
@@ -1561,7 +1570,7 @@ elif menu == "📋  Mural da Equipe":
 
             query = query.eq(
                 "usuario",
-                filtro_pessoa,
+                filtro_pessoa
             )
 
         res_mural = (
@@ -1573,6 +1582,7 @@ elif menu == "📋  Mural da Equipe":
             .execute()
         )
 
+
         if res_mural.data:
 
             for item in res_mural.data:
@@ -1580,6 +1590,7 @@ elif menu == "📋  Mural da Equipe":
                 c1, c2, c3 = st.columns(
                     [3.6, 1, 1]
                 )
+
 
                 with c1:
 
@@ -1589,10 +1600,7 @@ elif menu == "📋  Mural da Equipe":
                             datetime
                             .fromisoformat(
                                 item["data_hora"]
-                                .replace(
-                                    "Z",
-                                    "",
-                                )
+                                .replace("Z", "")
                             )
                             .strftime(
                                 "%d/%m/%Y %H:%M"
@@ -1603,6 +1611,7 @@ elif menu == "📋  Mural da Equipe":
 
                         dt_format = ""
 
+
                     rec_label = (
                         " 🔄 Repete todo mês"
                         if item.get(
@@ -1610,6 +1619,7 @@ elif menu == "📋  Mural da Equipe":
                         )
                         else ""
                     )
+
 
                     st.markdown(
                         f"""
@@ -1620,24 +1630,29 @@ elif menu == "📋  Mural da Equipe":
                                 padding-top:4px;
                             "
                         >
+
                             👤 <b>
-                                {item.get("usuario", "")}
+                                {item.get("usuario","")}
                             </b>
+
                             —
-                            {item.get("conteudo", "")}
+                            {item.get("conteudo","")}
 
                             <span
                                 style="color:#94a3b8;"
                             >
-                                &nbsp;(
+                                &nbsp;
+                                (
                                 {dt_format}
                                 {rec_label}
                                 )
                             </span>
+
                         </div>
                         """,
                         unsafe_allow_html=True,
                     )
+
 
                 with c2:
 
@@ -1667,11 +1682,10 @@ elif menu == "📋  Mural da Equipe":
                             unsafe_allow_html=True,
                         )
 
+
                 with c3:
 
-                    if not item.get(
-                        "concluido"
-                    ):
+                    if not item.get("concluido"):
 
                         if (
                             item.get("usuario")
@@ -1694,14 +1708,15 @@ elif menu == "📋  Mural da Equipe":
                                                 "data_hora"
                                             ].replace(
                                                 "Z",
-                                                "",
+                                                ""
                                             )
                                         )
                                     )
 
                                     dt_prox_mes = (
                                         dt_atual
-                                        + relativedelta(
+                                        +
+                                        relativedelta(
                                             months=1
                                         )
                                     )
@@ -1711,32 +1726,35 @@ elif menu == "📋  Mural da Equipe":
                                         .table(
                                             "lembretes"
                                         )
-                                        .insert(
-                                            {
-                                                "usuario": item[
+                                        .insert({
+                                            "usuario":
+                                                item[
                                                     "usuario"
                                                 ],
-                                                "conteudo": item[
+                                            "conteudo":
+                                                item[
                                                     "conteudo"
                                                 ],
-                                                "data_hora": dt_prox_mes.isoformat(),
-                                                "recorrente_mensal": True,
-                                                "concluido": False,
-                                            }
-                                        )
+                                            "data_hora":
+                                                dt_prox_mes
+                                                .isoformat(),
+                                            "recorrente_mensal":
+                                                True,
+                                            "concluido":
+                                                False,
+                                        })
                                         .execute()
                                     )
+
 
                                 (
                                     supabase
                                     .table(
                                         "lembretes"
                                     )
-                                    .update(
-                                        {
-                                            "concluido": True
-                                        }
-                                    )
+                                    .update({
+                                        "concluido": True
+                                    })
                                     .eq(
                                         "id",
                                         item["id"],
@@ -1756,10 +1774,12 @@ elif menu == "📋  Mural da Equipe":
                                 "🔒 Somente o criador"
                             )
 
+
                 st.markdown(
                     "<div class='soft-divider'></div>",
                     unsafe_allow_html=True,
                 )
+
 
         else:
 
@@ -1767,48 +1787,45 @@ elif menu == "📋  Mural da Equipe":
                 "Nenhum lembrete encontrado."
             )
 
+
     except Exception as e:
 
         st.error(
             f"Erro ao carregar o mural: {e}"
         )
 
+
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 
 # ============================================================
 # ABA 4 — DASHBOARD
 # ============================================================
-
 elif menu == "📊  Dashboard":
 
-    st.markdown(
-        textwrap.dedent(
-            f"""
-            <div class="card">
+    st.markdown(textwrap.dedent(f"""
+    <div class="card">
 
-                <div class="card-title">
-                    📊 &nbsp;Dashboard de Desempenho —
-                    {usuario_ativo}
-                </div>
+        <div class="card-title">
+            📊 &nbsp;Dashboard de Desempenho —
+            {usuario_ativo}
+        </div>
 
-                <div
-                    style="
-                        font-size:11px;
-                        color:#64748b;
-                        margin-bottom:15px;
-                    "
-                >
-                    Acompanhamento das tarefas e
-                    lembretes individuais.
-                </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
+        <div
+            style="
+                font-size:11px;
+                color:#64748b;
+                margin-bottom:15px;
+            "
+        >
+            Acompanhamento das tarefas
+            e lembretes individuais.
+        </div>
+    """), unsafe_allow_html=True)
+
 
     try:
 
@@ -1818,10 +1835,11 @@ elif menu == "📊  Dashboard":
             .select("*")
             .eq(
                 "usuario",
-                usuario_ativo,
+                usuario_ativo
             )
             .execute()
         )
+
 
         if res_dash.data:
 
@@ -1852,43 +1870,52 @@ elif menu == "📊  Dashboard":
                 else 0.0
             )
 
+
             m1, m2, m3, m4 = st.columns(4)
+
 
             m1.metric(
                 "Total de Lembretes",
                 total_tarefas,
             )
 
+
             m2.metric(
                 "Concluídos",
                 concluidas,
             )
+
 
             m3.metric(
                 "Pendentes",
                 pendentes,
             )
 
+
             m4.metric(
                 "Taxa de Cumprimento",
                 f"{taxa_sucesso:.1f}%",
             )
+
 
             st.markdown(
                 "<div class='soft-divider'></div>",
                 unsafe_allow_html=True,
             )
 
+
             st.markdown(
-                "**Desempenho Visual**"
+                "**Desempenho Visual**",
             )
+
 
             st.progress(
                 min(
                     taxa_sucesso / 100,
-                    1.0,
+                    1.0
                 )
             )
+
 
             if taxa_sucesso == 100:
 
@@ -1910,6 +1937,7 @@ elif menu == "📊  Dashboard":
                     "Atenção aos lembretes pendentes."
                 )
 
+
         else:
 
             st.info(
@@ -1917,52 +1945,50 @@ elif menu == "📊  Dashboard":
                 "para gerar métricas."
             )
 
+
     except Exception as e:
 
         st.error(
             f"Erro ao gerar dashboard: {e}"
         )
 
+
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 
 # ============================================================
 # ABA 5 — GERENCIAR EQUIPE
 # ============================================================
-
 elif menu == "⚙️  Gerenciar Equipe":
 
-    st.markdown(
-        textwrap.dedent(
-            """
-            <div class="card">
+    st.markdown(textwrap.dedent("""
+    <div class="card">
 
-                <div class="card-title">
-                    ⚙️ &nbsp;Gerenciar Membros do DP
-                </div>
+        <div class="card-title">
+            ⚙️ &nbsp;Gerenciar Membros do DP
+        </div>
 
-                <div
-                    style="
-                        font-size:11px;
-                        color:#64748b;
-                        margin-bottom:15px;
-                    "
-                >
-                    Cadastre novos membros que poderão
-                    utilizar o sistema.
-                </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
+        <div
+            style="
+                font-size:11px;
+                color:#64748b;
+                margin-bottom:15px;
+            "
+        >
+            Cadastre novos membros
+            que poderão utilizar o sistema.
+        </div>
+    """), unsafe_allow_html=True)
+
 
     novo_nome = st.text_input(
         "Nome do novo colaborador",
         placeholder="Digite o nome",
     ).upper()
+
 
     if st.button(
         "➕  Adicionar à Equipe",
@@ -1973,16 +1999,11 @@ elif menu == "⚙️  Gerenciar Equipe":
 
             try:
 
-                (
-                    supabase
-                    .table("colaboradores")
-                    .insert(
-                        {
-                            "nome": novo_nome
-                        }
-                    )
-                    .execute()
-                )
+                supabase.table(
+                    "colaboradores"
+                ).insert({
+                    "nome": novo_nome
+                }).execute()
 
                 st.success(
                     f"{novo_nome} adicionado com sucesso!"
@@ -1995,7 +2016,8 @@ elif menu == "⚙️  Gerenciar Equipe":
             except Exception:
 
                 st.error(
-                    "Nome já cadastrado ou erro ao salvar."
+                    "Nome já cadastrado "
+                    "ou erro ao salvar."
                 )
 
         else:
@@ -2004,7 +2026,8 @@ elif menu == "⚙️  Gerenciar Equipe":
                 "Digite o nome do colaborador."
             )
 
+
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
