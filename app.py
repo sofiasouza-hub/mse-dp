@@ -159,6 +159,15 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin-bottom: 11px;
 }
 
+/* ---------- FORÇA FUNDO BRANCO NOS CONTAINERS DO STREAMLIT ---------- */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,.045) !important;
+    padding: 16px !important;
+}
+
 /* ---------- NOVO LEMBRETE ---------- */
 .st-key-reminder_form {
     background: #ffffff !important;
@@ -945,132 +954,131 @@ elif menu == "📅  Calendário Coletivo":
 
 
 # ============================================================
-# ABA 3 — MURAL DA EQUIPE (CARD BRANCO PURA ESTILIZAÇÃO)
+# ABA 3 — MURAL DA EQUIPE (SISTEMA DE CONTAINER NATIVO BRANCO)
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
-    st.markdown("""
-    <div class="card">
+    with st.container(border=True):
+
+        st.markdown("""
         <div class="card-title">📋 &nbsp;Mural da Equipe</div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    filtro_pessoa = st.selectbox(
-        "Filtrar por colaborador",
-        ["Todos"] + lista_equipe,
-    )
+        filtro_pessoa = st.selectbox(
+            "Filtrar por colaborador",
+            ["Todos"] + lista_equipe,
+        )
 
-    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
-    try:
-        query = supabase.table("lembretes").select("*")
+        try:
+            query = supabase.table("lembretes").select("*")
 
-        if filtro_pessoa != "Todos":
-            query = query.eq("usuario", filtro_pessoa)
+            if filtro_pessoa != "Todos":
+                query = query.eq("usuario", filtro_pessoa)
 
-        res_mural = query.order(
-            "data_hora",
-            desc=True,
-        ).execute()
+            res_mural = query.order(
+                "data_hora",
+                desc=True,
+            ).execute()
 
-        if res_mural.data:
+            if res_mural.data:
 
-            for item in res_mural.data:
+                for item in res_mural.data:
 
-                c1, c2, c3 = st.columns([3.6, 1, 1])
+                    c1, c2, c3 = st.columns([3.6, 1, 1])
 
-                with c1:
-                    try:
-                        dt_format = datetime.fromisoformat(
-                            item["data_hora"].replace("Z", "")
-                        ).strftime("%d/%m/%Y %H:%M")
-                    except Exception:
-                        dt_format = ""
+                    with c1:
+                        try:
+                            dt_format = datetime.fromisoformat(
+                                item["data_hora"].replace("Z", "")
+                            ).strftime("%d/%m/%Y %H:%M")
+                        except Exception:
+                            dt_format = ""
 
-                    rec_label = (
-                        " 🔄 Repete todo mês"
-                        if item.get("recorrente_mensal")
-                        else ""
-                    )
+                        rec_label = (
+                            " 🔄 Repete todo mês"
+                            if item.get("recorrente_mensal")
+                            else ""
+                        )
+
+                        st.markdown(
+                            f"""
+                            <div style="font-size:12px;color:#334155;padding-top:4px;">
+                                👤 <b>{item.get("usuario","")}</b> —
+                                {item.get("conteudo","")}
+                                <span style="color:#94a3b8;">
+                                    &nbsp;({dt_format}{rec_label})
+                                </span>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+
+                    with c2:
+                        if item.get("concluido"):
+                            st.markdown(
+                                '<span class="badge badge-concluido">Concluído</span>',
+                                unsafe_allow_html=True,
+                            )
+                        else:
+                            st.markdown(
+                                '<span class="badge badge-pendente">Pendente</span>',
+                                unsafe_allow_html=True,
+                            )
+
+                    with c3:
+                        if not item.get("concluido"):
+
+                            if item.get("usuario") == usuario_ativo:
+
+                                if st.button(
+                                    "☑️ Concluir",
+                                    key=f"btn_{item['id']}",
+                                ):
+
+                                    if item.get("recorrente_mensal"):
+
+                                        dt_atual = datetime.fromisoformat(
+                                            item["data_hora"].replace("Z", "")
+                                        )
+
+                                        dt_prox_mes = (
+                                            dt_atual +
+                                            relativedelta(months=1)
+                                        )
+
+                                        supabase.table("lembretes").insert({
+                                            "usuario": item["usuario"],
+                                            "conteudo": item["conteudo"],
+                                            "data_hora": dt_prox_mes.isoformat(),
+                                            "recorrente_mensal": True,
+                                            "concluido": False,
+                                        }).execute()
+
+                                    supabase.table("lembretes").update(
+                                        {"concluido": True}
+                                    ).eq(
+                                        "id",
+                                        item["id"],
+                                    ).execute()
+
+                                    st.success("Lembrete concluído!")
+                                    st.rerun()
+
+                            else:
+                                st.caption("🔒 Somente o criador")
 
                     st.markdown(
-                        f"""
-                        <div style="font-size:12px;color:#334155;padding-top:4px;">
-                            👤 <b>{item.get("usuario","")}</b> —
-                            {item.get("conteudo","")}
-                            <span style="color:#94a3b8;">
-                                &nbsp;({dt_format}{rec_label})
-                            </span>
-                        </div>
-                        """,
+                        "<div class='soft-divider'></div>",
                         unsafe_allow_html=True,
                     )
 
-                with c2:
-                    if item.get("concluido"):
-                        st.markdown(
-                            '<span class="badge badge-concluido">Concluído</span>',
-                            unsafe_allow_html=True,
-                        )
-                    else:
-                        st.markdown(
-                            '<span class="badge badge-pendente">Pendente</span>',
-                            unsafe_allow_html=True,
-                        )
+            else:
+                st.info("Nenhum lembrete encontrado.")
 
-                with c3:
-                    if not item.get("concluido"):
-
-                        if item.get("usuario") == usuario_ativo:
-
-                            if st.button(
-                                "☑️ Concluir",
-                                key=f"btn_{item['id']}",
-                            ):
-
-                                if item.get("recorrente_mensal"):
-
-                                    dt_atual = datetime.fromisoformat(
-                                        item["data_hora"].replace("Z", "")
-                                    )
-
-                                    dt_prox_mes = (
-                                        dt_atual +
-                                        relativedelta(months=1)
-                                    )
-
-                                    supabase.table("lembretes").insert({
-                                        "usuario": item["usuario"],
-                                        "conteudo": item["conteudo"],
-                                        "data_hora": dt_prox_mes.isoformat(),
-                                        "recorrente_mensal": True,
-                                        "concluido": False,
-                                    }).execute()
-
-                                supabase.table("lembretes").update(
-                                    {"concluido": True}
-                                ).eq(
-                                    "id",
-                                    item["id"],
-                                ).execute()
-
-                                st.success("Lembrete concluído!")
-                                st.rerun()
-
-                        else:
-                            st.caption("🔒 Somente o criador")
-
-                st.markdown(
-                    "<div class='soft-divider'></div>",
-                    unsafe_allow_html=True,
-                )
-
-        else:
-            st.info("Nenhum lembrete encontrado.")
-
-    except Exception as e:
-        st.error(f"Erro ao carregar o mural: {e}")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Erro ao carregar o mural: {e}")
 
 
 # ============================================================
