@@ -152,7 +152,6 @@ div[role="radiogroup"] > label {
     cursor: pointer !important;
 }
 
-
 /* ---------- MENU PRINCIPAL ---------- */
 div[role="radiogroup"] {
     gap: 7px !important;
@@ -403,163 +402,6 @@ div[data-testid="stCheckbox"] label {
     margin-bottom: 13px;
 }
 
-.calendar-arrow {
-    color: #64748b;
-    font-size: 16px;
-}
-
-.cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    text-align: center;
-}
-
-.cal-weekday {
-    color: #94a3b8;
-    font-size: 9px;
-    font-weight: 700;
-    padding-bottom: 4px;
-}
-
-.cal-day {
-    min-height: 25px;
-    font-size: 10px;
-    color: #475569;
-    padding-top: 2px;
-}
-
-.cal-day-number {
-    width: 22px;
-    height: 22px;
-    line-height: 22px;
-    margin: auto;
-    border-radius: 50%;
-}
-
-.cal-today {
-    background: #dc2638;
-    color: white;
-    font-weight: 750;
-}
-
-.cal-dot {
-    width: 4px;
-    height: 4px;
-    background: #dc2638;
-    border-radius: 50%;
-    margin: 1px auto 0;
-}
-
-/* ---------- TABELA ---------- */
-.reminder-table {
-    width: 100%;
-    margin-top: 2px;
-    border-collapse: collapse;
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-}
-
-.reminder-table th {
-    background: #f1f5f9;
-    color: #64748b;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 750;
-    padding: 8px 9px;
-}
-
-.reminder-table td {
-    color: #334155;
-    padding: 9px;
-    border-bottom: 1px solid #edf2f7;
-}
-
-.reminder-table td:nth-child(2),
-.reminder-table th:nth-child(2) {
-    width: 80px;
-}
-
-.reminder-table td:nth-child(4),
-.reminder-table th:nth-child(4) {
-    text-align: center;
-    width: 90px;
-}
-
-.badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 9px;
-    font-weight: 750;
-}
-
-.badge-pendente {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.badge-concluido {
-    background: #d1fae5;
-    color: #059669;
-}
-
-/* ---------- MÉTRICAS ---------- */
-div[data-testid="stMetric"] {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    padding: 12px;
-}
-
-div[data-testid="stMetricLabel"] {
-    font-size: 11px !important;
-}
-
-/* ---------- TABELAS NATIVAS ---------- */
-div[data-testid="stDataFrame"] {
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-
-
-/* Formulário do lembrete */
-.reminder-form-title {
-    color: #123b66;
-    font-size: 15px;
-    font-weight: 800;
-    padding: 2px 0 10px 0;
-}
-
-div[data-testid="stTextInput"] input {
-    min-height: 40px !important;
-}
-
-/* ---------- CALENDÁRIO CLICÁVEL ---------- */
-.calendar-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    padding: 15px 16px;
-    box-shadow: 0 1px 4px rgba(15,23,42,.045);
-}
-
-.calendar-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #1e3a5f;
-    font-size: 14px;
-    font-weight: 750;
-    margin-bottom: 13px;
-}
-
-.calendar-arrow {
-    color: #64748b;
-    font-size: 16px;
-}
-
 .cal-grid-clickable {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -649,6 +491,106 @@ div[data-testid="stTextInput"] input {
     border-bottom: none;
 }
 
+/* ESTILO DOS BOTÕES DE NAVEGAÇÃO DO CALENDÁRIO */
+.cal-nav-btn button {
+    min-height: 24px !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+    background: #ffffff !important;
+}
+
+.cal-nav-btn button:hover {
+    border-color: #dc2638 !important;
+    color: #dc2638 !important;
+}
+
+/* ---------- TABELA ---------- */
+.reminder-table {
+    width: 100%;
+    margin-top: 2px;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+}
+
+.reminder-table th {
+    background: #f1f5f9;
+    color: #64748b;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 750;
+    padding: 8px 9px;
+}
+
+.reminder-table td {
+    color: #334155;
+    padding: 9px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.reminder-table td:nth-child(2),
+.reminder-table th:nth-child(2) {
+    width: 80px;
+}
+
+.reminder-table td:nth-child(4),
+.reminder-table th:nth-child(4) {
+    text-align: center;
+    width: 90px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.badge-pendente {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-concluido {
+    background: #d1fae5;
+    color: #059669;
+}
+
+/* ---------- MÉTRICAS ---------- */
+div[data-testid="stMetric"] {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 12px;
+}
+
+div[data-testid="stMetricLabel"] {
+    font-size: 11px !important;
+}
+
+/* ---------- TABELAS NATIVAS ---------- */
+div[data-testid="stDataFrame"] {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Formulário do lembrete */
+.reminder-form-title {
+    color: #123b66;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 2px 0 10px 0;
+}
+
+div[data-testid="stTextInput"] input {
+    min-height: 40px !important;
+}
+
 /* ---------- DIVISÓRIA ---------- */
 .soft-divider {
     height: 1px;
@@ -670,65 +612,6 @@ div[data-testid="stTextInput"] input {
     div[role="radiogroup"] {
         flex-wrap: wrap !important;
     }
-}
-
-/* ===== MENU SUPERIOR — CADA ITEM É UM QUADRADINHO ===== */
-div[role="radiogroup"] {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    align-items: center !important;
-    margin: 8px 0 16px 0 !important;
-}
-
-div[role="radiogroup"] > label {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: auto !important;
-    min-height: 34px !important;
-    padding: 0 13px !important;
-    margin: 0 !important;
-    border: 1px solid #d9dee7 !important;
-    border-radius: 5px !important;
-    background: #ffffff !important;
-    color: #334155 !important;
-    cursor: pointer !important;
-    box-sizing: border-box !important;
-    transition: all .15s ease !important;
-}
-
-/* Esconde completamente a bolinha do radio */
-div[role="radiogroup"] > label > div:first-child,
-div[role="radiogroup"] input[type="radio"] {
-    display: none !important;
-}
-
-/* O texto inteiro fica dentro do quadradinho */
-div[role="radiogroup"] > label p,
-div[role="radiogroup"] > label span {
-    color: inherit !important;
-    margin: 0 !important;
-    font-size: 13px !important;
-}
-
-/* Passando o mouse */
-div[role="radiogroup"] > label:hover {
-    border-color: #e52a3b !important;
-    color: #d92335 !important;
-    background: #ffffff !important;
-}
-
-/* ABA SELECIONADA:
-   a borda vermelha envolve TODA a opção, inclusive a letra */
-div[role="radiogroup"] > label:has(input:checked) {
-    border: 2px solid #e52a3b !important;
-    border-radius: 5px !important;
-    background: #ffffff !important;
-    color: #d92335 !important;
-    font-weight: 700 !important;
-    padding: 0 12px !important;
-    box-shadow: none !important;
 }
 </style>
 """), unsafe_allow_html=True)
@@ -797,8 +680,6 @@ st.html("""
 # ============================================================
 idx_padrao = lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0
 
-# O seletor continua existindo para trocar de usuário,
-# mas fica compacto logo abaixo da barra superior.
 col_user, col_space = st.columns([0.55, 4.45])
 
 with col_user:
@@ -837,15 +718,16 @@ st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
 # ============================================================
 # FUNÇÕES — CALENDÁRIO COLETIVO
 # ============================================================
-def montar_calendario_coletivo(hoje, eventos, dia_selecionado=None):
+def montar_calendario_coletivo(ano, mes, eventos, dia_selecionado=None):
     dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+    hoje = date.today()
 
     html = '<div class="cal-grid-clickable">'
 
     for nome_dia in dias_semana:
         html += f'<div class="cal-weekday-clickable">{nome_dia}</div>'
 
-    cal = calendar.monthcalendar(hoje.year, hoje.month)
+    cal = calendar.monthcalendar(ano, mes)
 
     for semana in cal:
         for dia in semana:
@@ -854,7 +736,7 @@ def montar_calendario_coletivo(hoje, eventos, dia_selecionado=None):
                 continue
 
             tem_evento = dia in eventos
-            eh_hoje = dia == hoje.day
+            eh_hoje = (dia == hoje.day and mes == hoje.month and ano == hoje.year)
             esta_selecionado = dia == dia_selecionado
 
             classes = ["cal-number"]
@@ -867,9 +749,7 @@ def montar_calendario_coletivo(hoje, eventos, dia_selecionado=None):
 
             dot = '<div class="cal-dot-red"></div>' if tem_evento else ""
 
-            # Clicar no número do dia recarrega a página mantendo a tela
-            # e informa qual dia foi selecionado.
-            href = f"?cal_day={dia}&cal_month={hoje.month}&cal_year={hoje.year}"
+            href = f"?cal_day={dia}&cal_month={mes}&cal_year={ano}"
 
             html += f"""
             <a class="cal-link" href="{href}" title="Ver compromissos do dia {dia}">
@@ -884,7 +764,6 @@ def montar_calendario_coletivo(hoje, eventos, dia_selecionado=None):
 
 # ============================================================
 # ABA 1 — MEUS LEMBRETES
-
 # ============================================================
 if menu == "🔔  Meus Lembretes":
 
@@ -896,8 +775,6 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         # CARD — NOVO LEMBRETE
-        # Mantemos DATA e HORA como duas caixas próprias,
-        # porque esses campos já estão funcionando corretamente.
         with st.container(border=True, key="reminder_form"):
 
             st.markdown("""
@@ -975,9 +852,7 @@ if menu == "🔔  Meus Lembretes":
                     st.warning("Digite o texto do lembrete.")
 
         # ----------------------------------------------------
-        # ----------------------------------------------------
         # CARD — LEMBRETES AGENDADOS
-        # Tudo fica dentro de UMA única caixa branca.
         # ----------------------------------------------------
         try:
             res_lembretes = (
@@ -1053,16 +928,19 @@ if menu == "🔔  Meus Lembretes":
         """)
 
     # --------------------------------------------------------
-    # COLUNA LATERAL — CALENDÁRIO COLETIVO
+    # COLUNA LATERAL — CALENDÁRIO COLETIVO INTERATIVO
     # --------------------------------------------------------
     with col_lateral:
-        # ----------------------------------------------------
-        # CALENDÁRIO COLETIVO — SOMENTE ATIVIDADES COMPARTILHADAS
-        # ----------------------------------------------------
+        # Inicializa o mês e o ano da exibição no Session State
         hoje = date.today()
+        if "cal_month" not in st.session_state:
+            st.session_state.cal_month = hoje.month
+        if "cal_year" not in st.session_state:
+            st.session_state.cal_year = hoje.year
 
-        # Lê somente a tabela notas_calendario.
-        # Os lembretes pessoais NÃO entram neste calendário.
+        cal_m = st.session_state.cal_month
+        cal_y = st.session_state.cal_year
+
         eventos_coletivos = {}
 
         try:
@@ -1081,8 +959,8 @@ if menu == "🔔  Meus Lembretes":
                     )
 
                     if (
-                        dt_nota.year == hoje.year
-                        and dt_nota.month == hoje.month
+                        dt_nota.year == cal_y
+                        and dt_nota.month == cal_m
                     ):
                         eventos_coletivos.setdefault(
                             dt_nota.day,
@@ -1097,7 +975,6 @@ if menu == "🔔  Meus Lembretes":
         except Exception:
             pass
 
-        # Dia escolhido pelo clique no calendário.
         dia_param = st.query_params.get("cal_day")
 
         try:
@@ -1110,8 +987,8 @@ if menu == "🔔  Meus Lembretes":
             and (
                 dia_selecionado < 1
                 or dia_selecionado > calendar.monthrange(
-                    hoje.year,
-                    hoje.month,
+                    cal_y,
+                    cal_m,
                 )[1]
             )
         ):
@@ -1124,25 +1001,51 @@ if menu == "🔔  Meus Lembretes":
             "Setembro", "Outubro", "Novembro", "Dezembro"
         ]
 
-        nome_mes = meses[hoje.month]
+        nome_mes = meses[cal_m]
 
         calendario_html = montar_calendario_coletivo(
-            hoje,
+            cal_y,
+            cal_m,
             eventos_coletivos,
             dia_selecionado,
         )
 
+        # Cabeçalho com botões integrados para voltar e avançar meses
+        st.markdown('<div class="calendar-card">', unsafe_allow_html=True)
+        col_tit, col_prev, col_next = st.columns([3.2, 0.4, 0.4])
+        
+        with col_tit:
+            st.markdown(f'<div style="color:#1e3a5f;font-size:14px;font-weight:750;">📅 &nbsp;{nome_mes} {cal_y}</div>', unsafe_allow_html=True)
+            
+        with col_prev:
+            st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
+            if st.button("‹", key="cal_btn_prev"):
+                if st.session_state.cal_month == 1:
+                    st.session_state.cal_month = 12
+                    st.session_state.cal_year -= 1
+                else:
+                    st.session_state.cal_month -= 1
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_next:
+            st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
+            if st.button("›", key="cal_btn_next"):
+                if st.session_state.cal_month == 12:
+                    st.session_state.cal_month = 1
+                    st.session_state.cal_year += 1
+                else:
+                    st.session_state.cal_month += 1
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+
         st.html(f"""
-        <div class="calendar-card">
-            <div class="calendar-head">
-                <span>📅 &nbsp;{nome_mes} {hoje.year}</span>
-                <span class="calendar-arrow">‹ &nbsp;&nbsp; ›</span>
-            </div>
+        <div style="margin-top:8px;">
             {calendario_html}
+        </div>
         </div>
         """)
 
-        # Mostra o conteúdo do dia clicado.
         if dia_selecionado is not None:
             compromissos = eventos_coletivos.get(
                 dia_selecionado,
@@ -1185,6 +1088,7 @@ if menu == "🔔  Meus Lembretes":
                 </div>
                 """)
 
+# ============================================================
 # ABA 2 — CALENDÁRIO COLETIVO
 # ============================================================
 elif menu == "📅  Calendário Coletivo":
@@ -1195,6 +1099,7 @@ elif menu == "📅  Calendário Coletivo":
         <div style="font-size:11px;color:#64748b;margin-bottom:12px;">
             Avisos, reuniões e eventos gerais visíveis para todo o setor.
         </div>
+    </div>
     """), unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 2])
@@ -1231,11 +1136,10 @@ elif menu == "📅  Calendário Coletivo":
         else:
             st.warning("Digite um recado ou compromisso.")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
     st.markdown(textwrap.dedent("""
     <div class="card">
-        <div class="section-title">📋 Recados cadastrados</div>
+        <div class="card-title">📋 Recados cadastrados</div>
+    </div>
     """), unsafe_allow_html=True)
 
     try:
@@ -1269,8 +1173,6 @@ elif menu == "📅  Calendário Coletivo":
     except Exception as e:
         st.error(f"Erro ao carregar recados: {e}")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 # ============================================================
 # ABA 3 — MURAL
@@ -1280,6 +1182,7 @@ elif menu == "📋  Mural da Equipe":
     st.markdown(textwrap.dedent("""
     <div class="card">
         <div class="card-title">📋 &nbsp;Mural da Equipe</div>
+    </div>
     """), unsafe_allow_html=True)
 
     filtro_pessoa = st.selectbox(
@@ -1396,8 +1299,6 @@ elif menu == "📋  Mural da Equipe":
     except Exception as e:
         st.error(f"Erro ao carregar o mural: {e}")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 # ============================================================
 # ABA 4 — DASHBOARD
@@ -1410,6 +1311,7 @@ elif menu == "📊  Dashboard":
         <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
             Acompanhamento das tarefas e lembretes individuais.
         </div>
+    </div>
     """), unsafe_allow_html=True)
 
     try:
@@ -1493,8 +1395,6 @@ elif menu == "📊  Dashboard":
     except Exception as e:
         st.error(f"Erro ao gerar dashboard: {e}")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 # ============================================================
 # ABA 5 — GERENCIAR EQUIPE
@@ -1507,6 +1407,7 @@ elif menu == "⚙️  Gerenciar Equipe":
         <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
             Cadastre novos membros que poderão utilizar o sistema.
         </div>
+    </div>
     """), unsafe_allow_html=True)
 
     novo_nome = st.text_input(
@@ -1541,5 +1442,3 @@ elif menu == "⚙️  Gerenciar Equipe":
             st.warning(
                 "Digite o nome do colaborador."
             )
-
-    st.markdown("</div>", unsafe_allow_html=True)
