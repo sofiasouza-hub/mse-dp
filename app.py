@@ -159,6 +159,15 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin-bottom: 11px;
 }
 
+/* ---------- CONTAINER DO MURAL COM FUNDO BRANCO ---------- */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(div.mural-container-marker) {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,.045) !important;
+    padding: 18px !important;
+}
+
 /* ---------- NOVO LEMBRETE ---------- */
 .st-key-reminder_form {
     background: #ffffff !important;
@@ -945,13 +954,14 @@ elif menu == "📅  Calendário Coletivo":
 
 
 # ============================================================
-# ABA 3 — MURAL DA EQUIPE (ELEGANTE EM CARD UNIFICADO)
+# ABA 3 — MURAL DA EQUIPE (CARD BRANCO PURA ESTILIZAÇÃO)
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
     with st.container(border=True):
 
         st.markdown("""
+        <div class="mural-container-marker"></div>
         <div class="card-title">📋 &nbsp;Mural da Equipe</div>
         """, unsafe_allow_html=True)
 
