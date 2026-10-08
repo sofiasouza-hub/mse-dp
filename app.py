@@ -159,12 +159,6 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin-bottom: 11px;
 }
 
-.card-title-red {
-    color: #dc2638;
-    font-size: 14px;
-    font-weight: 750;
-}
-
 /* ---------- NOVO LEMBRETE ---------- */
 .st-key-reminder_form {
     background: #ffffff !important;
@@ -218,7 +212,7 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
 .stButton > button {
     border-radius: 5px !important;
     border: 1px solid #dbe3ec !important;
-    min-height: 32px !important;
+    min-height: 35px !important;
     font-size: 12px !important;
     font-weight: 650 !important;
     background: #ffffff !important;
@@ -231,7 +225,7 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     color: white !important;
 }
 
-/* ---------- CALENDÁRIO LATERAL NATIVO ---------- */
+/* ---------- CALENDÁRIO LATERAL LIMPO ---------- */
 .calendar-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -247,65 +241,82 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     color: #1e3a5f;
     font-size: 14px;
     font-weight: 750;
-    margin-bottom: 10px;
+    margin-bottom: 13px;
 }
 
-.cal-grid-header {
+.calendar-arrow-btn {
+    color: #64748b !important;
+    font-size: 16px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    padding: 0 6px;
+    cursor: pointer;
+}
+
+.calendar-arrow-btn:hover {
+    color: #dc2638 !important;
+}
+
+.cal-grid-clickable {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: 4px;
     text-align: center;
-    margin-bottom: 6px;
 }
 
-.cal-weekday {
+.cal-weekday-clickable {
     color: #94a3b8;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
+    padding-bottom: 5px;
 }
 
-/* Botões do grid de dias do calendário */
-div[data-testid="stColumn"] .cal-day-btn button {
-    width: 100% !important;
-    min-height: 28px !important;
-    height: 28px !important;
-    padding: 0 !important;
-    font-size: 11px !important;
-    border-radius: 50% !important;
-    border: none !important;
-    background: transparent !important;
+.cal-empty {
+    min-height: 31px;
+}
+
+.cal-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 31px;
     color: #475569 !important;
+    text-decoration: none !important;
+    font-size: 10px;
+    line-height: 21px;
+    border-radius: 50%;
 }
 
-div[data-testid="stColumn"] .cal-day-btn-today button {
-    width: 100% !important;
-    min-height: 28px !important;
-    height: 28px !important;
-    padding: 0 !important;
-    font-size: 11px !important;
-    border-radius: 50% !important;
-    background: #dc2638 !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    border: none !important;
-}
-
-div[data-testid="stColumn"] .cal-day-btn-event button {
-    position: relative !important;
+.cal-link:hover {
     color: #dc2638 !important;
-    font-weight: 800 !important;
 }
 
-/* Botões de navegação < e > */
-.cal-nav-btn button {
-    min-height: 24px !important;
-    height: 24px !important;
-    padding: 0 8px !important;
-    font-size: 12px !important;
-    border-radius: 4px !important;
-    border: 1px solid #e2e8f0 !important;
-    color: #64748b !important;
-    background: #ffffff !important;
+.cal-number {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+}
+
+.cal-number.today {
+    background: #dc2638;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.cal-number.selected {
+    outline: 2px solid #dc2638;
+    outline-offset: 1px;
+    font-weight: 800;
+}
+
+.cal-dot-red {
+    width: 4px;
+    height: 4px;
+    background: #dc2638;
+    border-radius: 50%;
+    margin-top: 1px;
 }
 
 .calendar-selected {
@@ -481,6 +492,53 @@ st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
 
 
 # ============================================================
+# FUNÇÕES — CALENDÁRIO COLETIVO
+# ============================================================
+def montar_calendario_coletivo(ano, mes, eventos, dia_selecionado=None):
+    dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+    hoje = date.today()
+
+    html = '<div class="cal-grid-clickable">'
+
+    for nome_dia in dias_semana:
+        html += f'<div class="cal-weekday-clickable">{nome_dia}</div>'
+
+    cal = calendar.monthcalendar(ano, mes)
+
+    for semana in cal:
+        for dia in semana:
+            if dia == 0:
+                html += '<div class="cal-empty"></div>'
+                continue
+
+            tem_evento = dia in eventos
+            eh_hoje = (dia == hoje.day and mes == hoje.month and ano == hoje.year)
+            esta_selecionado = dia == dia_selecionado
+
+            classes = ["cal-number"]
+            if eh_hoje:
+                classes.append("today")
+            if esta_selecionado:
+                classes.append("selected")
+
+            numero = " ".join(classes)
+
+            dot = '<div class="cal-dot-red"></div>' if tem_evento else ""
+
+            href = f"?cal_day={dia}&cal_month={mes}&cal_year={ano}"
+
+            html += f"""
+            <a class="cal-link" href="{href}" title="Ver compromissos do dia {dia}">
+                <div class="{numero}">{dia}</div>
+                {dot}
+            </a>
+            """
+
+    html += "</div>"
+    return html
+
+
+# ============================================================
 # ABA 1 — MEUS LEMBRETES
 # ============================================================
 if menu == "🔔  Meus Lembretes":
@@ -646,20 +704,37 @@ if menu == "🔔  Meus Lembretes":
         """)
 
     # --------------------------------------------------------
-    # COLUNA LATERAL — CALENDÁRIO COLETIVO INTERATIVO NATIVO
+    # COLUNA LATERAL — CALENDÁRIO COLETIVO INTERATIVO
     # --------------------------------------------------------
     with col_lateral:
         hoje = date.today()
-        if "cal_month" not in st.session_state:
-            st.session_state.cal_month = hoje.month
-        if "cal_year" not in st.session_state:
-            st.session_state.cal_year = hoje.year
+        
+        # Lê mês/ano selecionados na URL ou usa o mês atual
+        cal_m = int(st.query_params.get("cal_month", hoje.month))
+        cal_y = int(st.query_params.get("cal_year", hoje.year))
 
-        cal_m = st.session_state.cal_month
-        cal_y = st.session_state.cal_year
+        # Checa e processa cliques de navegação pelas setinhas na URL
+        if st.query_params.get("cal_prev"):
+            if cal_m == 1:
+                cal_m = 12
+                cal_y -= 1
+            else:
+                cal_m -= 1
+            st.query_params["cal_month"] = str(cal_m)
+            st.query_params["cal_year"] = str(cal_y)
+            del st.query_params["cal_prev"]
+            st.rerun()
 
-        if "selected_day" not in st.session_state:
-            st.session_state.selected_day = None
+        if st.query_params.get("cal_next"):
+            if cal_m == 12:
+                cal_m = 1
+                cal_y += 1
+            else:
+                cal_m += 1
+            st.query_params["cal_month"] = str(cal_m)
+            st.query_params["cal_year"] = str(cal_y)
+            del st.query_params["cal_next"]
+            st.rerun()
 
         eventos_coletivos = {}
 
@@ -695,6 +770,25 @@ if menu == "🔔  Meus Lembretes":
         except Exception:
             pass
 
+        dia_param = st.query_params.get("cal_day")
+
+        try:
+            dia_selecionado = int(dia_param) if dia_param else None
+        except (TypeError, ValueError):
+            dia_selecionado = None
+
+        if (
+            dia_selecionado is not None
+            and (
+                dia_selecionado < 1
+                or dia_selecionado > calendar.monthrange(
+                    cal_y,
+                    cal_m,
+                )[1]
+            )
+        ):
+            dia_selecionado = None
+
         meses = [
             "",
             "Janeiro", "Fevereiro", "Março", "Abril",
@@ -704,70 +798,26 @@ if menu == "🔔  Meus Lembretes":
 
         nome_mes = meses[cal_m]
 
-        # Card Branco unificado para o calendário
-        with st.container():
-            st.markdown('<div class="calendar-card">', unsafe_allow_html=True)
-            col_tit, col_prev, col_next = st.columns([3.2, 0.4, 0.4])
+        calendario_html = montar_calendario_coletivo(
+            cal_y,
+            cal_m,
+            eventos_coletivos,
+            dia_selecionado,
+        )
 
-            with col_tit:
-                st.markdown(f'<div style="color:#1e3a5f;font-size:14px;font-weight:750;padding-top:2px;">📅 &nbsp;{nome_mes} {cal_y}</div>', unsafe_allow_html=True)
-
-            with col_prev:
-                st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
-                if st.button("‹", key="btn_cal_prev"):
-                    if st.session_state.cal_month == 1:
-                        st.session_state.cal_month = 12
-                        st.session_state.cal_year -= 1
-                    else:
-                        st.session_state.cal_month -= 1
-                    st.rerun()
-                st.markdown('</div>', unsafe_allow_html=True)
-
-            with col_next:
-                st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
-                if st.button("›", key="btn_cal_next"):
-                    if st.session_state.cal_month == 12:
-                        st.session_state.cal_month = 1
-                        st.session_state.cal_year += 1
-                    else:
-                        st.session_state.cal_month += 1
-                    st.rerun()
-                st.markdown('</div>', unsafe_allow_html=True)
-
-            # Cabeçalho dos dias da semana
-            st.markdown("""
-            <div class="cal-grid-header">
-                <div class="cal-weekday">Seg</div>
-                <div class="cal-weekday">Ter</div>
-                <div class="cal-weekday">Qua</div>
-                <div class="cal-weekday">Qui</div>
-                <div class="cal-weekday">Sex</div>
-                <div class="cal-weekday">Sáb</div>
-                <div class="cal-weekday">Dom</div>
+        # Card branco unificado contendo o título, as setinhas e os dias
+        st.html(f"""
+        <div class="calendar-card">
+            <div class="calendar-head">
+                <span>📅 &nbsp;{nome_mes} {cal_y}</span>
+                <div>
+                    <a href="?cal_prev=1&cal_month={cal_m}&cal_year={cal_y}" class="calendar-arrow-btn">‹</a>
+                    <a href="?cal_next=1&cal_month={cal_m}&cal_year={cal_y}" class="calendar-arrow-btn">›</a>
+                </div>
             </div>
-            """, unsafe_allow_html=True)
-
-            # Matriz de dias do mês
-            cal = calendar.monthcalendar(cal_y, cal_m)
-
-            for semana in cal:
-                cols = st.columns(7)
-                for idx, dia in enumerate(semana):
-                    if dia != 0:
-                        eh_hoje = (dia == hoje.day and cal_m == hoje.month and cal_y == hoje.year)
-                        tem_evento = dia in eventos_coletivos
-
-                        btn_class = "cal-day-btn-today" if eh_hoje else ("cal-day-btn-event" if tem_evento else "cal-day-btn")
-                        
-                        cols[idx].markdown(f'<div class="{btn_class}">', unsafe_allow_html=True)
-                        if cols[idx].button(str(dia), key=f"cal_day_{cal_y}_{cal_m}_{dia}"):
-                            st.session_state.selected_day = dia
-                            st.rerun()
-                        cols[idx].markdown('</div>', unsafe_allow_html=True)
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        dia_selecionado = st.session_state.selected_day
+            {calendario_html}
+        </div>
+        """)
 
         if dia_selecionado is not None:
             compromissos = eventos_coletivos.get(
