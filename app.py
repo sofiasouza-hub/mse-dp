@@ -124,7 +124,7 @@ div[role="radiogroup"] > label {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 5px !important;
-    min-height: 38px !important;
+    min-height: 36px !important;
     padding: 0 17px !important;
     box-shadow: 0 1px 2px rgba(15,23,42,.04);
     color: #475569 !important;
@@ -137,10 +137,10 @@ div[role="radiogroup"] > label:hover {
 }
 
 div[role="radiogroup"] > label:has(input:checked) {
-    background: #dc2638 !important;
-    border-color: #dc2638 !important;
-    color: white !important;
-    box-shadow: 0 2px 5px rgba(220,38,56,.18);
+    background: #ffffff !important;
+    border: 2px solid #dc2638 !important;
+    color: #dc2638 !important;
+    box-shadow: 0 2px 5px rgba(220,38,56,.12);
 }
 
 div[role="radiogroup"] > label input {
