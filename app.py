@@ -178,36 +178,36 @@ div[role="radiogroup"] > label {
 }
 
 /* ---------- NOVO LEMBRETE — VISUAL DA REFERÊNCIA ---------- */
-.reminder-form-card {
-    background: #ffffff;
-    border: 1px solid #e4e9ef;
-    border-radius: 6px;
-    padding: 14px 16px 13px 16px;
-    box-shadow: 0 1px 4px rgba(15,23,42,.045);
-    margin-bottom: 12px;
+.st-key-reminder_form {
+    background: #ffffff !important;
+    border: 1px solid #e4e9ef !important;
+    border-radius: 6px !important;
+    padding: 13px 16px 12px 16px !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,.045) !important;
+    margin-bottom: 12px !important;
 }
 
-.reminder-form-title {
+.st-key-reminder_form .reminder-form-title {
     display: flex;
     align-items: center;
     gap: 7px;
     color: #17395f;
     font-size: 14px;
     font-weight: 800;
-    margin-bottom: 11px;
+    margin: 0 0 10px 0;
 }
 
-.reminder-form-title-icon {
+.st-key-reminder_form .reminder-form-title-icon {
     font-size: 15px;
     line-height: 1;
     filter: saturate(.65);
 }
 
-.reminder-form-card div[data-testid="stTextInput"] {
-    margin-bottom: 10px !important;
+.st-key-reminder_form div[data-testid="stTextInput"] {
+    margin-bottom: 9px !important;
 }
 
-.reminder-form-card div[data-testid="stTextInput"] input {
+.st-key-reminder_form div[data-testid="stTextInput"] input {
     height: 38px !important;
     min-height: 38px !important;
     border: 1px solid #dce5ee !important;
@@ -215,41 +215,43 @@ div[role="radiogroup"] > label {
     padding: 0 12px !important;
     color: #334155 !important;
     font-size: 11px !important;
+    background: #ffffff !important;
 }
 
-.reminder-form-card div[data-testid="stCheckbox"] {
-    margin-top: 2px !important;
+.st-key-reminder_form div[data-testid="stTextInput"] input::placeholder {
+    color: #9aaec3 !important;
 }
 
-.reminder-form-card div[data-testid="stCheckbox"] label {
+/* Esconde somente os campos técnicos de data/hora. */
+.st-key-reminder_form div[data-testid="stDateInput"],
+.st-key-reminder_form div[data-testid="stTimeInput"] {
+    display: none !important;
+}
+
+/* Mantém a linha inferior compacta. */
+.st-key-reminder_form div[data-testid="stCheckbox"] {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.st-key-reminder_form div[data-testid="stCheckbox"] label {
     color: #526b86 !important;
     font-size: 11px !important;
 }
 
-.reminder-form-card .stButton {
+.st-key-reminder_form .stButton {
     display: flex !important;
     justify-content: flex-end !important;
 }
 
-.reminder-form-card .stButton > button {
+.st-key-reminder_form .stButton > button {
     width: 168px !important;
     min-height: 36px !important;
     height: 36px !important;
     border-radius: 5px !important;
     font-size: 11px !important;
     font-weight: 700 !important;
-}
-
-/* Os campos técnicos continuam existindo para a lógica atual,
-   mas ficam fora da composição visual da referência. */
-.reminder-form-card .date-time-row {
-    display: none !important;
-}
-
-.section-title {
-    color: #1e3a5f;
-    font-size: 15px;
-    font-weight: 750;
+    margin-top: 0 !important;
 }
 
 /* ---------- INPUTS ---------- */
@@ -772,80 +774,78 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         # CARD — NOVO LEMBRETE
-        # Visual seguindo exatamente a referência enviada.
-        st.markdown("""
-        <div class="reminder-form-card">
+        # O formulário inteiro fica dentro de um único container,
+        # para que título, campo, checkbox e botão formem UMA caixa.
+        with st.container(border=True, key="reminder_form"):
+
+            st.markdown("""
             <div class="reminder-form-title">
                 <span class="reminder-form-title-icon">💬</span>
                 <span>O que você precisa lembrar?</span>
             </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-        texto_lembrete = st.text_input(
-            "Lembrete",
-            placeholder="Ex: Dia 08/02 às 09:00, subir e-mail",
-            label_visibility="collapsed",
-        )
-
-        # Mantemos data/hora para não quebrar a lógica atual do Supabase.
-        # A apresentação desses campos será ocultada visualmente.
-        st.markdown('<div class="date-time-row">', unsafe_allow_html=True)
-        col_data, col_hora = st.columns([1, 1])
-
-        with col_data:
-            data_lembrete = st.date_input(
-                "Data",
-                value=date.today(),
+            texto_lembrete = st.text_input(
+                "Lembrete",
+                placeholder="Ex: Dia 08/02 às 09:00, subir e-mail",
                 label_visibility="collapsed",
             )
 
-        with col_hora:
-            hora_lembrete = st.time_input(
-                "Horário",
-                value=datetime.now().time().replace(second=0, microsecond=0),
-                label_visibility="collapsed",
-            )
-        st.markdown('</div>', unsafe_allow_html=True)
+            # Mantidos para a lógica do Supabase.
+            # Eles ficam ocultos visualmente para seguir a referência.
+            col_data, col_hora = st.columns([1, 1])
 
-        col_check, col_btn = st.columns([1.55, 1])
+            with col_data:
+                data_lembrete = st.date_input(
+                    "Data",
+                    value=date.today(),
+                    label_visibility="collapsed",
+                )
 
-        with col_check:
-            recorrente = st.checkbox(
-                "Repetir este lembrete todo mês"
-            )
+            with col_hora:
+                hora_lembrete = st.time_input(
+                    "Horário",
+                    value=datetime.now().time().replace(second=0, microsecond=0),
+                    label_visibility="collapsed",
+                )
 
-        with col_btn:
-            btn_agendar = st.button(
-                "🗓️  Agendar Lembrete →",
-                use_container_width=True,
-                type="primary",
-            )
+            col_check, col_btn = st.columns([1.55, 1])
 
-        if btn_agendar:
-            if texto_lembrete:
-                dt_completa = datetime.combine(
-                    data_lembrete,
-                    hora_lembrete,
-                ).isoformat()
+            with col_check:
+                recorrente = st.checkbox(
+                    "Repetir este lembrete todo mês"
+                )
 
-                dados_insert = {
-                    "usuario": usuario_ativo,
-                    "conteudo": texto_lembrete,
-                    "data_hora": dt_completa,
-                    "recorrente_mensal": recorrente,
-                    "concluido": False,
-                }
+            with col_btn:
+                btn_agendar = st.button(
+                    "🗓️  Agendar Lembrete →",
+                    use_container_width=True,
+                    type="primary",
+                )
 
-                try:
-                    supabase.table("lembretes").insert(dados_insert).execute()
-                    st.success("Lembrete agendado com sucesso!")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Erro ao salvar: {e}")
-            else:
-                st.warning("Digite o texto do lembrete.")
+            if btn_agendar:
+                if texto_lembrete:
+                    dt_completa = datetime.combine(
+                        data_lembrete,
+                        hora_lembrete,
+                    ).isoformat()
 
-        st.markdown("</div>", unsafe_allow_html=True)
+                    dados_insert = {
+                        "usuario": usuario_ativo,
+                        "conteudo": texto_lembrete,
+                        "data_hora": dt_completa,
+                        "recorrente_mensal": recorrente,
+                        "concluido": False,
+                    }
+
+                    try:
+                        supabase.table("lembretes").insert(dados_insert).execute()
+                        st.success("Lembrete agendado com sucesso!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erro ao salvar: {e}")
+                else:
+                    st.warning("Digite o texto do lembrete.")
 
         # ----------------------------------------------------
         # ----------------------------------------------------
