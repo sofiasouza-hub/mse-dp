@@ -602,6 +602,7 @@ if menu == "🔔  Meus Lembretes":
                 data_lembrete = st.date_input(
                     "Data",
                     value=date.today(),
+                    format="DD/MM/YYYY",
                     label_visibility="collapsed",
                     key="lembrete_data_v9",
                 )
@@ -908,6 +909,7 @@ elif menu == "📅  Calendário Coletivo":
         dia_selecionado = st.date_input(
             "Data",
             value=date.today(),
+            format="DD/MM/YYYY",
         )
 
     with col2:
@@ -955,8 +957,13 @@ elif menu == "📅  Calendário Coletivo":
             for nota_item in res_notas.data:
                 col_info, col_del = st.columns([4, 1])
                 with col_info:
+                    try:
+                        data_br = datetime.strptime(str(nota_item.get("data")), "%Y-%m-%d").strftime("%d/%m/%Y")
+                    except Exception:
+                        data_br = str(nota_item.get("data"))
+
                     st.markdown(
-                        f"🗓️ **{nota_item.get('data')}** — {nota_item.get('nota')} *(por {nota_item.get('autor')})*"
+                        f"🗓️ **{data_br}** — {nota_item.get('nota')} *(por {nota_item.get('autor')})*"
                     )
                 with col_del:
                     if nota_item.get("autor") == usuario_ativo:
