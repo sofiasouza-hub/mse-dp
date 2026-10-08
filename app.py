@@ -580,9 +580,6 @@ if menu == "🔔  Meus Lembretes":
     # --------------------------------------------------------
     with col_principal:
 
-        if "form_data_val" not in st.session_state:
-            st.session_state.form_data_val = date.today()
-
         # CARD — NOVO LEMBRETE
         with st.container(border=True, key="reminder_form"):
 
@@ -599,22 +596,16 @@ if menu == "🔔  Meus Lembretes":
                 key="lembrete_texto_v9",
             )
 
-            col_data, col_btn_mes, col_hora = st.columns([1.2, 0.8, 1], gap="small")
+            col_data, col_hora = st.columns([1, 1], gap="small")
 
             with col_data:
                 data_lembrete = st.date_input(
                     "Data",
-                    value=st.session_state.form_data_val,
+                    value=date.today(),
                     format="DD/MM/YYYY",
                     label_visibility="collapsed",
                     key="lembrete_data_v9",
                 )
-                st.session_state.form_data_val = data_lembrete
-
-            with col_btn_mes:
-                if st.button("➕ 1 Mês", use_container_width=True, key="btn_add_month"):
-                    st.session_state.form_data_val = st.session_state.form_data_val + relativedelta(months=1)
-                    st.rerun()
 
             with col_hora:
                 hora_lembrete = st.time_input(
@@ -661,7 +652,6 @@ if menu == "🔔  Meus Lembretes":
                     try:
                         supabase.table("lembretes").insert(dados_insert).execute()
                         st.success("Lembrete agendado com sucesso!")
-                        st.session_state.form_data_val = date.today()
                         st.rerun()
                     except Exception as e:
                         st.error(f"Erro ao salvar: {e}")
