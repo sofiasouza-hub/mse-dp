@@ -801,7 +801,7 @@ if menu == "🔔  Meus Lembretes":
                 "Lembrete",
                 placeholder="Ex: Dia 08/02 às 09:00, subir e-mail",
                 label_visibility="collapsed",
-                key="texto_lembrete",
+                key="lembrete_texto_v9",
             )
 
             col_data, col_hora = st.columns([1, 1], gap="small")
@@ -810,9 +810,8 @@ if menu == "🔔  Meus Lembretes":
                 data_lembrete = st.date_input(
                     "Data",
                     value=date.today(),
-                    format="YYYY / MM / DD",
                     label_visibility="collapsed",
-                    key="data_lembrete",
+                    key="lembrete_data_v9",
                 )
 
             with col_hora:
@@ -823,7 +822,7 @@ if menu == "🔔  Meus Lembretes":
                         microsecond=0,
                     ),
                     label_visibility="collapsed",
-                    key="hora_lembrete",
+                    key="lembrete_hora_v9",
                 )
 
             col_check, col_btn = st.columns([1.55, 1], gap="small")
@@ -831,7 +830,7 @@ if menu == "🔔  Meus Lembretes":
             with col_check:
                 recorrente = st.checkbox(
                     "Repetir este lembrete todo mês",
-                    key="recorrente_lembrete",
+                    key="lembrete_recorrente_v9",
                 )
 
             with col_btn:
@@ -839,7 +838,7 @@ if menu == "🔔  Meus Lembretes":
                     "🗓️  Agendar Lembrete →",
                     use_container_width=True,
                     type="primary",
-                    key="btn_agendar_lembrete",
+                    key="lembrete_agendar_v9",
                 )
 
             if btn_agendar:
