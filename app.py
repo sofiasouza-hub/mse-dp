@@ -473,6 +473,19 @@ div[data-testid="stDataFrame"] {
 }
 
 
+
+/* Formulário do lembrete */
+.reminder-form-title {
+    color: #123b66;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 2px 0 10px 0;
+}
+
+div[data-testid="stTextInput"] input {
+    min-height: 40px !important;
+}
+
 /* ---------- CALENDÁRIO CLICÁVEL ---------- */
 .calendar-card {
     background: #ffffff;
@@ -774,14 +787,13 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         # CARD — NOVO LEMBRETE
-        # O formulário inteiro fica dentro de um único container,
-        # para que título, campo, checkbox e botão formem UMA caixa.
+        # Mantemos DATA e HORA como duas caixas próprias,
+        # porque esses campos já estão funcionando corretamente.
         with st.container(border=True, key="reminder_form"):
 
             st.markdown("""
             <div class="reminder-form-title">
-                <span class="reminder-form-title-icon">💬</span>
-                <span>O que você precisa lembrar?</span>
+                💬 &nbsp;O que você precisa lembrar?
             </div>
             """, unsafe_allow_html=True)
 
@@ -789,31 +801,37 @@ if menu == "🔔  Meus Lembretes":
                 "Lembrete",
                 placeholder="Ex: Dia 08/02 às 09:00, subir e-mail",
                 label_visibility="collapsed",
+                key="texto_lembrete",
             )
 
-            # Mantidos para a lógica do Supabase.
-            # Eles ficam ocultos visualmente para seguir a referência.
-            col_data, col_hora = st.columns([1, 1])
+            col_data, col_hora = st.columns([1, 1], gap="small")
 
             with col_data:
                 data_lembrete = st.date_input(
                     "Data",
                     value=date.today(),
+                    format="YYYY / MM / DD",
                     label_visibility="collapsed",
+                    key="data_lembrete",
                 )
 
             with col_hora:
                 hora_lembrete = st.time_input(
                     "Horário",
-                    value=datetime.now().time().replace(second=0, microsecond=0),
+                    value=datetime.now().time().replace(
+                        second=0,
+                        microsecond=0,
+                    ),
                     label_visibility="collapsed",
+                    key="hora_lembrete",
                 )
 
-            col_check, col_btn = st.columns([1.55, 1])
+            col_check, col_btn = st.columns([1.55, 1], gap="small")
 
             with col_check:
                 recorrente = st.checkbox(
-                    "Repetir este lembrete todo mês"
+                    "Repetir este lembrete todo mês",
+                    key="recorrente_lembrete",
                 )
 
             with col_btn:
@@ -821,6 +839,7 @@ if menu == "🔔  Meus Lembretes":
                     "🗓️  Agendar Lembrete →",
                     use_container_width=True,
                     type="primary",
+                    key="btn_agendar_lembrete",
                 )
 
             if btn_agendar:
