@@ -222,10 +222,23 @@ div[role="radiogroup"] > label {
     color: #9aaec3 !important;
 }
 
-/* Esconde somente os campos técnicos de data/hora. */
+/* Data e hora ficam visíveis em duas caixas separadas. */
 .st-key-reminder_form div[data-testid="stDateInput"],
 .st-key-reminder_form div[data-testid="stTimeInput"] {
-    display: none !important;
+    display: block !important;
+    margin-bottom: 9px !important;
+}
+
+.st-key-reminder_form div[data-testid="stDateInput"] input,
+.st-key-reminder_form div[data-testid="stTimeInput"] input {
+    height: 38px !important;
+    min-height: 38px !important;
+    border: 1px solid #dce5ee !important;
+    border-radius: 5px !important;
+    padding: 0 12px !important;
+    color: #334155 !important;
+    font-size: 11px !important;
+    background: #ffffff !important;
 }
 
 /* Mantém a linha inferior compacta. */
