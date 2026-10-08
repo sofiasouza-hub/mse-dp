@@ -489,7 +489,7 @@ div[data-testid="stDataFrame"] {
 }
 
 .calendar-selected {
-    margin-top: 12px;
+    margin-top: 10px;
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-left: 3px solid #dc2638;
@@ -695,7 +695,7 @@ def montar_calendario_coletivo(hoje, eventos, dia_selecionado=None):
 # ============================================================
 if menu == "🔔  Meus Lembretes":
 
-    col_principal, col_lateral = st.columns([2.35, 1], gap="small")
+    col_principal, col_lateral = st.columns([2.35, 1], gap="medium")
 
     # --------------------------------------------------------
     # COLUNA PRINCIPAL
@@ -846,6 +846,10 @@ if menu == "🔔  Meus Lembretes":
         </div>
         """)
 
+    # --------------------------------------------------------
+    # COLUNA LATERAL — CALENDÁRIO COLETIVO
+    # --------------------------------------------------------
+    with col_lateral:
         # ----------------------------------------------------
         # CALENDÁRIO COLETIVO — SOMENTE ATIVIDADES COMPARTILHADAS
         # ----------------------------------------------------
