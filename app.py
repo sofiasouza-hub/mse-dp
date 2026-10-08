@@ -147,9 +147,7 @@ div[role="radiogroup"] > label input {
     display: none !important;
 }
 
-div[role="radiogroup"] > label > div:first-child {
-    display: none !important;
-}
+div[role="radiogroup"] > label > div:first-child { display: none !important; }
 div[role="radiogroup"] > label {
     cursor: pointer !important;
 }
@@ -191,9 +189,7 @@ div[role="radiogroup"] > label input {
     display: none !important;
 }
 
-div[role="radiogroup"] > label > div:first-child {
-    display: none !important;
-}
+div[role="radiogroup"] > label > div:first-child { display: none !important; }
 
 /* ---------- CARDS ---------- */
 .card {
@@ -674,6 +670,65 @@ div[data-testid="stTextInput"] input {
     div[role="radiogroup"] {
         flex-wrap: wrap !important;
     }
+}
+
+/* ===== MENU SUPERIOR — CADA ITEM É UM QUADRADINHO ===== */
+div[role="radiogroup"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+    margin: 8px 0 16px 0 !important;
+}
+
+div[role="radiogroup"] > label {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-height: 34px !important;
+    padding: 0 13px !important;
+    margin: 0 !important;
+    border: 1px solid #d9dee7 !important;
+    border-radius: 5px !important;
+    background: #ffffff !important;
+    color: #334155 !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    transition: all .15s ease !important;
+}
+
+/* Esconde completamente a bolinha do radio */
+div[role="radiogroup"] > label > div:first-child,
+div[role="radiogroup"] input[type="radio"] {
+    display: none !important;
+}
+
+/* O texto inteiro fica dentro do quadradinho */
+div[role="radiogroup"] > label p,
+div[role="radiogroup"] > label span {
+    color: inherit !important;
+    margin: 0 !important;
+    font-size: 13px !important;
+}
+
+/* Passando o mouse */
+div[role="radiogroup"] > label:hover {
+    border-color: #e52a3b !important;
+    color: #d92335 !important;
+    background: #ffffff !important;
+}
+
+/* ABA SELECIONADA:
+   a borda vermelha envolve TODA a opção, inclusive a letra */
+div[role="radiogroup"] > label:has(input:checked) {
+    border: 2px solid #e52a3b !important;
+    border-radius: 5px !important;
+    background: #ffffff !important;
+    color: #d92335 !important;
+    font-weight: 700 !important;
+    padding: 0 12px !important;
+    box-shadow: none !important;
 }
 </style>
 """), unsafe_allow_html=True)
