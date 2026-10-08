@@ -78,14 +78,20 @@ with aba1:
         if btn_agendar:
             if texto_lembrete:
                 dt_completa = datetime.combine(data_lembrete, hora_lembrete).isoformat()
-                supabase.table("lembretes").insert({
+                
+                # Inserção segura enviando apenas campos confirmados na tabela
+                dados_insert = {
                     "usuario": usuario_ativo,
                     "conteudo": texto_lembrete,
-                    "data_hora": dt_completa,
-                    "recorrente_mensal": recorrente
-                }).execute()
-                st.success("Lembrete agendado com sucesso!")
-                st.rerun()
+                    "data_hora": dt_completa
+                }
+                
+                try:
+                    supabase.table("lembretes").insert(dados_insert).execute()
+                    st.success("Lembrete agendado com sucesso!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro ao salvar lembrete: {e}")
             else:
                 st.warning("Digite o texto do lembrete.")
 
@@ -102,7 +108,7 @@ with aba1:
                     "Data": dt_obj.strftime('%d/%m/%Y'),
                     "Horário": dt_obj.strftime('%H:%M'),
                     "Lembrete": item['conteudo'],
-                    "Status": "🟢 Concluído" if item['concluido'] else "🟡 Pendente"
+                    "Status": "🟢 Concluído" if item.get('concluido') else "🟡 Pendente"
                 })
             df_exibir = pd.DataFrame(dados_tabela)
             st.dataframe(df_exibir, use_container_width=True, hide_index=True)
@@ -192,14 +198,19 @@ with aba3:
         for item in res_mural.data:
             c1, c2, c3 = st.columns([3, 1, 1])
             with c1:
-                st.write(f"👤 **{item['usuario']}**: {item['conteudo']} *(Agendado para: {datetime.fromisoformat(item['data_hora'].replace('Z', '')).strftime('%d/%m/%Y %H:%M')})*")
+                dt_format = datetime.fromisoformat(item['data_hora'].replace('Z', '')).strftime('%d/%m/%Y %H:%M')
+                st.write(f"👤 **{item['usuario']}**: {item['conteudo']} *(Agendado: {dt_format})*")
             with c2:
-                st.write("🟢 Concluído" if item['concluido'] else "🟡 Pendente")
+                st.write("🟢 Concluído" if item.get('concluido') else "🟡 Pendente")
             with c3:
-                if not item['concluido']:
-                    if st.button("☑️ Marcar Feito", key=f"btn_{item['id']}"):
-                        supabase.table("lembretes").update({"concluido": True}).eq("id", item['id']).execute()
-                        st.rerun()
+                if not item.get('concluido'):
+                    if item['usuario'] == usuario_ativo:
+                        if st.button("☑️ Concluir", key=f"btn_{item['id']}"):
+                            supabase.table("lembretes").update({"concluido": True}).eq("id", item['id']).execute()
+                            st.success("Lembrete concluído!")
+                            st.rerun()
+                    else:
+                        st.caption("🔒 Aprazável só pelo criador")
 
 # --- ABA 4: GERENCIAR EQUIPE ---
 with aba4:
