@@ -709,11 +709,9 @@ if menu == "🔔  Meus Lembretes":
     with col_lateral:
         hoje = date.today()
         
-        # Lê mês/ano selecionados na URL ou usa o mês atual
         cal_m = int(st.query_params.get("cal_month", hoje.month))
         cal_y = int(st.query_params.get("cal_year", hoje.year))
 
-        # Checa e processa cliques de navegação pelas setinhas na URL
         if st.query_params.get("cal_prev"):
             if cal_m == 1:
                 cal_m = 12
@@ -805,7 +803,6 @@ if menu == "🔔  Meus Lembretes":
             dia_selecionado,
         )
 
-        # Card branco unificado contendo o título, as setinhas e os dias
         st.html(f"""
         <div class="calendar-card">
             <div class="calendar-head">
@@ -948,15 +945,14 @@ elif menu == "📅  Calendário Coletivo":
 
 
 # ============================================================
-# ABA 3 — MURAL
+# ABA 3 — MURAL (CARD UNIFICADO COM FILTRO E LISTA)
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
-    st.markdown(textwrap.dedent("""
+    st.markdown("""
     <div class="card">
         <div class="card-title">📋 &nbsp;Mural da Equipe</div>
-    </div>
-    """), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     filtro_pessoa = st.selectbox(
         "Filtrar por colaborador",
@@ -1071,6 +1067,8 @@ elif menu == "📋  Mural da Equipe":
 
     except Exception as e:
         st.error(f"Erro ao carregar o mural: {e}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ============================================================
