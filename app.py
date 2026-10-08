@@ -1,39 +1,109 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
+import calendar
 from supabase import create_client, Client
 
 # Configuração da Página
 st.set_page_config(page_title="MSE | DP", page_icon="🔴", layout="wide")
 
-# Estilização CSS Personalizada (Tema MSE DP)
+# Estilização CSS para réplica do layout da imagem
 st.markdown("""
     <style>
-        .main { background-color: #F3F4F6; }
+        .main { background-color: #ECEFF1; }
+        .stApp { background-color: #ECEFF1; }
+        
+        /* Topbar */
         .topbar {
-            background-color: #1E293B;
-            padding: 15px 25px;
-            border-radius: 8px;
+            background-color: #1B2430;
+            padding: 12px 25px;
+            border-radius: 6px;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-        .logo-text { font-size: 26px; font-weight: bold; color: #DC2626; }
-        .dept-text { font-size: 22px; font-weight: bold; color: #FFFFFF; margin-left: 10px; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #E53935; }
+        .dept-text { font-size: 20px; font-weight: bold; color: #FFFFFF; margin-left: 8px; }
+        
+        /* Cards */
+        .css-card {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        
+        .card-prox-lembrete {
+            background-color: #FFF5F5;
+            border: 1px solid #FFE3E3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .time-highlight {
+            font-size: 38px;
+            font-weight: 800;
+            color: #D32F2F;
+            margin: 10px 0;
+        }
+        
+        /* Botões */
         .stButton>button {
-            background-color: #DC2626;
+            background-color: #D32F2F;
             color: white;
             border-radius: 6px;
             font-weight: bold;
             border: none;
+            padding: 8px 16px;
         }
-        .stButton>button:hover { background-color: #B91C1C; color: white; }
+        .stButton>button:hover { background-color: #B71C1C; color: white; }
+        
+        /* Calendário Customizado */
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .cal-day-name { font-weight: bold; color: #78909C; padding-bottom: 5px; }
+        .cal-day {
+            padding: 6px 0;
+            border-radius: 50%;
+            position: relative;
+            color: #37474F;
+        }
+        .cal-day-active {
+            background-color: #D32F2F;
+            color: white;
+            font-weight: bold;
+        }
+        .cal-dot {
+            height: 4px;
+            width: 4px;
+            background-color: #D32F2F;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            bottom: 2px;
+            left: 45%;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# Conexão com Supabase
+# Conexão Supabase
 @st.cache_resource
 def init_supabase() -> Client:
     url = st.secrets["SUPABASE_URL"]
@@ -42,7 +112,7 @@ def init_supabase() -> Client:
 
 supabase = init_supabase()
 
-# Buscar lista de colaboradores com salvaguarda
+# Lista de equipe
 @st.cache_data(ttl=5)
 def get_colaboradores():
     try:
@@ -63,74 +133,130 @@ st.markdown("""
             <span class="logo-text">MSE</span>
             <span class="dept-text">| DP</span>
         </div>
-        <div>🟢 Nuvem Conectada</div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span>🟢 Nuvem Conectada</span>
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
 col_top1, col_top2 = st.columns([3, 1])
 with col_top2:
     idx_padrao = lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0
-    usuario_ativo = st.selectbox("👤 Usuário Ativo", options=lista_equipe, index=idx_padrao)
+    usuario_ativo = st.selectbox("👤 Usuário:", options=lista_equipe, index=idx_padrao)
 
-# Garantir string válida
 if not usuario_ativo:
     usuario_ativo = "SOFIA"
 
 # --- NAVEGAÇÃO POR ABAS ---
-aba1, aba2, aba3, aba4 = st.tabs(["🔴 Meus Lembretes", "📅 Calendário Coletivo", "📋 Mural da Equipe", "⚙️ Gerenciar Equipe"])
+aba1, aba2, aba3, aba4 = st.tabs(["🔔 Meus Lembretes", "📅 Calendário Coletivo", "📋 Mural da Equipe", "⚙️ Gerenciar Equipe"])
 
-# --- ABA 1: MEUS LEMBRETES ---
+# --- ABA 1: MEUS LEMBRETES (LAYOUT IDÊNTICO À IMAGEM) ---
 with aba1:
-    col_esq, col_dir = st.columns([2, 1])
+    col_principal, col_lateral = st.columns([2.2, 1])
     
-    with col_esq:
-        st.subheader("💬 O que você precisa lembrar?")
-        
-        c_texto, c_data, c_hora = st.columns([2, 1, 1])
-        with c_texto:
-            texto_lembrete = st.text_input("Lembrete", placeholder="Ex: Dia 08/02 às 09:00, subir e-mail")
-        with c_data:
-            data_lembrete = st.date_input("Data", value=date.today())
-        with c_hora:
-            hora_lembrete = st.time_input("Horário")
+    with col_principal:
+        # Card 1: Formulário
+        with st.container():
+            st.subheader("💬 O que você precisa lembrar?")
             
-        recorrente = st.checkbox("Repetir este lembrete todo mês")
-        
-        if st.button("🗓️ Agendar Lembrete →"):
-            if texto_lembrete:
-                dt_completa = datetime.combine(data_lembrete, hora_lembrete).isoformat()
-                supabase.table("lembretes").insert({
-                    "usuario": usuario_ativo,
-                    "conteudo": texto_lembrete,
-                    "data_hora": dt_completa,
-                    "recorrente_mensal": recorrente
-                }).execute()
-                st.success("Lembrete agendado com sucesso!")
-                st.rerun()
-            else:
-                st.warning("Preencha o texto do lembrete.")
+            c_input, c_data, c_hora = st.columns([2, 1, 1])
+            with c_input:
+                texto_lembrete = st.text_input("Lembrete", placeholder="Ex: Dia 08/02 às 09:00, subir e-mail", label_visibility="collapsed")
+            with c_data:
+                data_lembrete = st.date_input("Data", value=date.today(), label_visibility="collapsed")
+            with c_hora:
+                hora_lembrete = st.time_input("Horário", label_visibility="collapsed")
+                
+            col_check, col_btn = st.columns([2, 1])
+            with col_check:
+                recorrente = st.checkbox("Repetir este lembrete todo mês")
+            with col_btn:
+                btn_agendar = st.button("🗓️ Agendar Lembrete →", use_container_width=True)
+                
+            if btn_agendar:
+                if texto_lembrete:
+                    dt_completa = datetime.combine(data_lembrete, hora_lembrete).isoformat()
+                    supabase.table("lembretes").insert({
+                        "usuario": usuario_ativo,
+                        "conteudo": texto_lembrete,
+                        "data_hora": dt_completa,
+                        "recorrente_mensal": recorrente
+                    }).execute()
+                    st.success("Lembrete agendado!")
+                    st.rerun()
+                else:
+                    st.warning("Digite o texto do lembrete.")
 
-        st.markdown("---")
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # Card 2: Tabela de Lembretes Agendados
         st.subheader("📋 Seus Lembretes Agendados")
-        
         res_lembretes = supabase.table("lembretes").select("*").eq("usuario", usuario_ativo).order("data_hora").execute()
+        
         if res_lembretes.data:
-            df = pd.DataFrame(res_lembretes.data)
-            df['Data/Hora'] = pd.to_datetime(df['data_hora']).dt.strftime('%d/%m/%Y %H:%M')
-            df['Status'] = df['concluido'].apply(lambda x: "🟢 Concluído" if x else "🟡 Pendente")
-            st.dataframe(df[['Data/Hora', 'conteudo', 'Status']].rename(columns={'conteudo': 'Lembrete'}), use_container_width=True)
+            dados_tabela = []
+            for item in res_lembretes.data:
+                dt_obj = datetime.fromisoformat(item['data_hora'].replace('Z', ''))
+                dados_tabela.append({
+                    "Data": dt_obj.strftime('%d/%m/%Y'),
+                    "Horário": dt_obj.strftime('%H:%M'),
+                    "Lembrete": item['conteudo'],
+                    "Status": "🟢 Concluído" if item['concluido'] else "🟡 Pendente"
+                })
+            df_exibir = pd.DataFrame(dados_tabela)
+            st.dataframe(df_exibir, use_container_width=True, hide_index=True)
         else:
             st.info(f"Nenhum lembrete agendado para {usuario_ativo}")
 
-    with col_dir:
-        st.subheader("🔔 Próximo Lembrete")
+    with col_lateral:
+        # Card Lateral 1: Próximo Lembrete
         res_prox = supabase.table("lembretes").select("*").eq("usuario", usuario_ativo).eq("concluido", False).order("data_hora").limit(1).execute()
+        
+        st.markdown("""
+            <div class="card-prox-lembrete">
+                <div style="color: #D32F2F; font-weight: bold; font-size: 16px;">🔔 Próximo Lembrete</div>
+        """, unsafe_allow_html=True)
+        
         if res_prox.data:
             prox = res_prox.data[0]
             dt = datetime.fromisoformat(prox['data_hora'].replace('Z', ''))
-            st.error(f"⏰ **{dt.strftime('%H:%M')}** ({dt.strftime('%d/%m/%Y')})\n\n**{prox['conteudo']}**")
+            st.markdown(f"""
+                <div class="time-highlight">⏰ {dt.strftime('%H:%M')}</div>
+                <div style="color: #37474F; font-weight: 600;">{prox['conteudo']}</div>
+                <div style="color: #78909C; font-size: 12px; margin-top: 5px;">Data: {dt.strftime('%d/%m/%Y')}</div>
+            """, unsafe_allow_html=True)
         else:
-            st.success("Sem lembretes pendentes!")
+            st.markdown("""
+                <div class="time-highlight">--:--</div>
+                <div style="color: #78909C;">Sem lembretes pendentes</div>
+            """, unsafe_allow_html=True)
+            
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # Card Lateral 2: Calendário Visual do Mês
+        st.markdown('<div class="css-card">', unsafe_allow_html=True)
+        hoje = date.today()
+        st.markdown(f'<div class="cal-header"><span>📅 {hoje.strftime("%B %Y").capitalize()}</span></div>', unsafe_allow_html=True)
+        
+        # Grid de Dias
+        dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+        grid_html = '<div class="cal-grid">'
+        for d in dias_semana:
+            grid_html += f'<div class="cal-day-name">{d}</div>'
+            
+        cal = calendar.monthcalendar(hoje.year, hoje.month)
+        for semana in cal:
+            for dia in semana:
+                if dia == 0:
+                    grid_html += '<div></div>'
+                else:
+                    is_today = (dia == hoje.day)
+                    cls = "cal-day cal-day-active" if is_today else "cal-day"
+                    grid_html += f'<div class="{cls}">{dia}</div>'
+        grid_html += '</div>'
+        
+        st.markdown(grid_html, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- ABA 2: CALENDÁRIO COLETIVO ---
 with aba2:
@@ -150,7 +276,7 @@ with aba2:
     st.markdown("---")
     res_notas = supabase.table("notas_calendario").select("*").order("data", desc=True).execute()
     if res_notas.data:
-        st.dataframe(pd.DataFrame(res_notas.data)[['data', 'autor', 'nota']].rename(columns={'data': 'Data', 'autor': 'Autor', 'nota': 'Recado'}), use_container_width=True)
+        st.dataframe(pd.DataFrame(res_notas.data)[['data', 'autor', 'nota']].rename(columns={'data': 'Data', 'autor': 'Autor', 'nota': 'Recado'}), use_container_width=True, hide_index=True)
 
 # --- ABA 3: MURAL DA EQUIPE ---
 with aba3:
