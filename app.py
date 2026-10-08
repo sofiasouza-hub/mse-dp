@@ -1,4 +1,3 @@
-```
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
@@ -8,9 +7,6 @@ import textwrap
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 
-# ============================================================
-# CONFIGURAÇÃO
-# ============================================================
 st.set_page_config(
     page_title="MSE | DP",
     page_icon="🔴",
@@ -18,9 +14,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ============================================================
-# CSS
-# ============================================================
 st.markdown("""
 <style>
 
@@ -34,9 +27,7 @@ st.markdown("""
     padding: 16px 24px 28px 24px;
 }
 
-#MainMenu,
-footer,
-header {
+#MainMenu, footer, header {
     visibility: hidden;
 }
 
@@ -44,9 +35,9 @@ div[data-testid="stVerticalBlock"] {
     gap: 0.55rem;
 }
 
-/* ============================================================
+/* =========================
    TOPBAR
-   ============================================================ */
+   ========================= */
 
 .topbar {
     height: 58px;
@@ -97,70 +88,91 @@ div[data-testid="stVerticalBlock"] {
     font-weight: 600;
 }
 
-/* ============================================================
+/* =========================
    MENU SUPERIOR
-   ============================================================ */
+   ========================= */
 
-.menu-container {
-    margin-top: 4px;
-    margin-bottom: 15px;
+div[role="radiogroup"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+    background: transparent !important;
+    margin: 8px 0 16px 0 !important;
 }
 
-.menu-container [data-testid="column"] {
-    padding: 0 3px !important;
-}
+div[role="radiogroup"] > label {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-.menu-container .stButton {
-    width: 100%;
-}
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 36px !important;
 
-.menu-container .stButton > button {
-    width: 100% !important;
-    min-height: 38px !important;
-    height: 38px !important;
-    padding: 0 10px !important;
+    padding: 0 14px !important;
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
     border: 1px solid #d9dee7 !important;
     border-radius: 5px !important;
+
     background: #ffffff !important;
     color: #334155 !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
     box-shadow: none !important;
-    transition: all .15s ease !important;
+
+    transition:
+        border-color .15s ease,
+        color .15s ease,
+        background .15s ease,
+        box-shadow .15s ease !important;
 }
 
-.menu-container .stButton > button:hover {
-    border: 1px solid #e52a3b !important;
+div[role="radiogroup"] > label:hover {
+    border-color: #e52a3b !important;
     color: #d92335 !important;
     background: #ffffff !important;
 }
 
-/* ============================================================
+div[role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+
+div[role="radiogroup"] > label input[type="radio"] {
+    display: none !important;
+}
+
+div[role="radiogroup"] > label p,
+div[role="radiogroup"] > label span {
+    color: inherit !important;
+    margin: 0 !important;
+    font-size: 13px !important;
+}
+
+/*
    ABA SELECIONADA
-   ============================================================ */
 
-/* A borda vermelha é aplicada no BOTÃO INTEIRO */
-.menu-container .st-key-nav0 .stButton > button,
-.menu-container .st-key-nav1 .stButton > button,
-.menu-container .st-key-nav2 .stButton > button,
-.menu-container .st-key-nav3 .stButton > button,
-.menu-container .st-key-nav4 .stButton > button {
-    box-sizing: border-box !important;
+   Fundo continua branco.
+   A borda vermelha envolve o quadradinho inteiro.
+*/
+
+div[role="radiogroup"] > label:has(input[type="radio"]:checked) {
+    border: 2px solid #e52a3b !important;
+    border-radius: 5px !important;
+    background: #ffffff !important;
+    color: #d92335 !important;
+    font-weight: 700 !important;
+    padding: 0 13px !important;
+    box-shadow: none !important;
 }
 
-/* ============================================================
-   USUÁRIO
-   ============================================================ */
-
-.user-label {
-    color: #64748b;
-    font-size: 11px;
-    margin-bottom: -7px;
-}
-
-/* ============================================================
+/* =========================
    CARDS
-   ============================================================ */
+   ========================= */
 
 .card {
     background: #ffffff;
@@ -178,9 +190,9 @@ div[data-testid="stVerticalBlock"] {
     margin-bottom: 11px;
 }
 
-/* ============================================================
-   NOVO LEMBRETE
-   ============================================================ */
+/* =========================
+   LEMBRETE
+   ========================= */
 
 .st-key-reminder_form {
     background: #ffffff !important;
@@ -191,16 +203,21 @@ div[data-testid="stVerticalBlock"] {
     margin-bottom: 12px !important;
 }
 
-.reminder-form-title {
-    color: #123b66;
-    font-size: 15px;
+.st-key-reminder_form .reminder-form-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #17395f;
+    font-size: 14px;
     font-weight: 800;
-    padding: 2px 0 10px 0;
+    margin: 0 0 10px 0;
 }
 
-.st-key-reminder_form div[data-testid="stTextInput"] input,
-.st-key-reminder_form div[data-testid="stDateInput"] input,
-.st-key-reminder_form div[data-testid="stTimeInput"] input {
+.st-key-reminder_form div[data-testid="stTextInput"] {
+    margin-bottom: 9px !important;
+}
+
+.st-key-reminder_form div[data-testid="stTextInput"] input {
     height: 38px !important;
     min-height: 38px !important;
     border: 1px solid #dce5ee !important;
@@ -211,8 +228,22 @@ div[data-testid="stVerticalBlock"] {
     background: #ffffff !important;
 }
 
-.st-key-reminder_form div[data-testid="stTextInput"] input::placeholder {
-    color: #9aaec3 !important;
+.st-key-reminder_form div[data-testid="stDateInput"],
+.st-key-reminder_form div[data-testid="stTimeInput"] {
+    display: block !important;
+    margin-bottom: 9px !important;
+}
+
+.st-key-reminder_form div[data-testid="stDateInput"] input,
+.st-key-reminder_form div[data-testid="stTimeInput"] input {
+    height: 38px !important;
+    min-height: 38px !important;
+    border: 1px solid #dce5ee !important;
+    border-radius: 5px !important;
+    padding: 0 12px !important;
+    color: #334155 !important;
+    font-size: 11px !important;
+    background: #ffffff !important;
 }
 
 .st-key-reminder_form div[data-testid="stCheckbox"] {
@@ -239,9 +270,9 @@ div[data-testid="stVerticalBlock"] {
     font-weight: 700 !important;
 }
 
-/* ============================================================
+/* =========================
    INPUTS
-   ============================================================ */
+   ========================= */
 
 div[data-testid="stTextInput"] input,
 div[data-testid="stDateInput"] input,
@@ -254,13 +285,9 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     font-size: 12px !important;
 }
 
-div[data-testid="stTextInput"] input::placeholder {
-    color: #a0aec0 !important;
-}
-
-/* ============================================================
+/* =========================
    BOTÕES
-   ============================================================ */
+   ========================= */
 
 .stButton > button {
     border-radius: 5px !important;
@@ -284,22 +311,74 @@ div[data-testid="stTextInput"] input::placeholder {
 }
 
 .stButton > button[kind="primary"]:hover {
-    color: white !important;
     background: #c81f32 !important;
+    border-color: #c81f32 !important;
+    color: white !important;
 }
 
-/* ============================================================
-   CHECKBOX
-   ============================================================ */
+/* =========================
+   TABELA
+   ========================= */
 
-div[data-testid="stCheckbox"] label {
-    font-size: 11px !important;
-    color: #64748b !important;
+.reminder-table {
+    width: 100%;
+    margin-top: 2px;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
 }
 
-/* ============================================================
+.reminder-table th {
+    background: #f1f5f9;
+    color: #64748b;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 750;
+    padding: 8px 9px;
+}
+
+.reminder-table td {
+    color: #334155;
+    padding: 9px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.reminder-table td:nth-child(2),
+.reminder-table th:nth-child(2) {
+    width: 80px;
+}
+
+.reminder-table td:nth-child(4),
+.reminder-table th:nth-child(4) {
+    text-align: center;
+    width: 90px;
+}
+
+/* =========================
+   BADGES
+   ========================= */
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.badge-pendente {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-concluido {
+    background: #d1fae5;
+    color: #059669;
+}
+
+/* =========================
    CALENDÁRIO
-   ============================================================ */
+   ========================= */
 
 .calendar-card {
     background: #ffffff;
@@ -413,65 +492,9 @@ div[data-testid="stCheckbox"] label {
     border-bottom: none;
 }
 
-/* ============================================================
-   TABELA
-   ============================================================ */
-
-.reminder-table {
-    width: 100%;
-    margin-top: 2px;
-    border-collapse: collapse;
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-}
-
-.reminder-table th {
-    background: #f1f5f9;
-    color: #64748b;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 750;
-    padding: 8px 9px;
-}
-
-.reminder-table td {
-    color: #334155;
-    padding: 9px;
-    border-bottom: 1px solid #edf2f7;
-}
-
-.reminder-table td:nth-child(2),
-.reminder-table th:nth-child(2) {
-    width: 80px;
-}
-
-.reminder-table td:nth-child(4),
-.reminder-table th:nth-child(4) {
-    text-align: center;
-    width: 90px;
-}
-
-.badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 9px;
-    font-weight: 750;
-}
-
-.badge-pendente {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.badge-concluido {
-    background: #d1fae5;
-    color: #059669;
-}
-
-/* ============================================================
-   MÉTRICAS
-   ============================================================ */
+/* =========================
+   OUTROS
+   ========================= */
 
 div[data-testid="stMetric"] {
     background: #ffffff;
@@ -480,13 +503,10 @@ div[data-testid="stMetric"] {
     padding: 12px;
 }
 
-div[data-testid="stMetricLabel"] {
-    font-size: 11px !important;
+div[data-testid="stDataFrame"] {
+    border-radius: 6px;
+    overflow: hidden;
 }
-
-/* ============================================================
-   DIVISÓRIA
-   ============================================================ */
 
 .soft-divider {
     height: 1px;
@@ -494,11 +514,8 @@ div[data-testid="stMetricLabel"] {
     margin: 8px 0 12px;
 }
 
-/* ============================================================
-   RESPONSIVO
-   ============================================================ */
-
 @media (max-width: 900px) {
+
     .block-container {
         padding: 12px;
     }
@@ -508,32 +525,38 @@ div[data-testid="stMetricLabel"] {
         font-size: 10px;
     }
 
-    .menu-container .stButton > button {
-        font-size: 11px !important;
-        padding: 0 5px !important;
+    div[role="radiogroup"] {
+        flex-wrap: wrap !important;
     }
 }
 
 </style>
 """, unsafe_allow_html=True)
 
+
 # ============================================================
 # SUPABASE
 # ============================================================
+
 @st.cache_resource
 def init_supabase() -> Client:
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
     return create_client(url, key)
 
+
 supabase = init_supabase()
+
 
 # ============================================================
 # DADOS
 # ============================================================
+
 @st.cache_data(ttl=5)
 def get_colaboradores():
+
     try:
+
         res = (
             supabase
             .table("colaboradores")
@@ -561,6 +584,7 @@ def get_colaboradores():
         return nomes
 
     except Exception:
+
         return [
             "ANY",
             "BRUNA",
@@ -571,13 +595,17 @@ def get_colaboradores():
             "SOFIA",
         ]
 
+
 lista_equipe = get_colaboradores()
+
 
 # ============================================================
 # TOPBAR
 # ============================================================
-st.html("""
+
+st.markdown("""
 <div class="topbar">
+
     <div class="brand">
         <span class="brand-mse">MSE</span>
         <span class="brand-divider">|</span>
@@ -589,12 +617,15 @@ st.html("""
         <span>|</span>
         <span>👤 Usuário: Sofia</span>
     </div>
+
 </div>
-""")
+""", unsafe_allow_html=True)
+
 
 # ============================================================
 # USUÁRIO ATIVO
 # ============================================================
+
 idx_padrao = (
     lista_equipe.index("SOFIA")
     if "SOFIA" in lista_equipe
@@ -604,6 +635,7 @@ idx_padrao = (
 col_user, col_space = st.columns([0.55, 4.45])
 
 with col_user:
+
     usuario_ativo = st.selectbox(
         "Usuário ativo",
         options=lista_equipe,
@@ -614,13 +646,9 @@ with col_user:
 if not usuario_ativo:
     usuario_ativo = "SOFIA"
 
+
 # ============================================================
 # MENU PRINCIPAL
-#
-# IMPORTANTE:
-# Aqui NÃO usamos st.radio.
-# O menu agora usa botões normais, porque assim conseguimos
-# garantir que a BORDA VERMELHA fique em volta do botão inteiro.
 # ============================================================
 
 opcoes_menu = [
@@ -631,60 +659,30 @@ opcoes_menu = [
     "⚙️  Gerenciar Equipe",
 ]
 
-if "menu_ativo" not in st.session_state:
-    st.session_state.menu_ativo = opcoes_menu[0]
-
-# CSS específico da opção atualmente selecionada
-indice_ativo = opcoes_menu.index(st.session_state.menu_ativo)
-
-st.markdown(f"""
-<style>
-.menu-container .st-key-nav{indice_ativo} .stButton > button {{
-    border: 2px solid #e52a3b !important;
-    color: #d92335 !important;
-    background: #ffffff !important;
-    font-weight: 700 !important;
-    box-shadow: none !important;
-}}
-</style>
-""", unsafe_allow_html=True)
+menu = st.radio(
+    "Navegação",
+    opcoes_menu,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="menu_principal",
+)
 
 st.markdown(
-    '<div class="menu-container">',
+    "<div style='height:2px'></div>",
     unsafe_allow_html=True
 )
 
-menu_cols = st.columns(
-    [1.25, 1.35, 1.25, 1.0, 1.35],
-    gap="small",
-)
-
-for i, opcao in enumerate(opcoes_menu):
-
-    with menu_cols[i]:
-
-        with st.container(key=f"nav{i}"):
-
-            if st.button(
-                opcao,
-                key=f"menu_btn_{i}",
-                use_container_width=True,
-            ):
-                st.session_state.menu_ativo = opcao
-                st.rerun()
-
-st.markdown("</div>", unsafe_allow_html=True)
-
-menu = st.session_state.menu_ativo
 
 # ============================================================
-# FUNÇÃO — CALENDÁRIO COLETIVO
+# FUNÇÃO DO CALENDÁRIO
 # ============================================================
+
 def montar_calendario_coletivo(
     hoje,
     eventos,
-    dia_selecionado=None,
+    dia_selecionado=None
 ):
+
     dias_semana = [
         "Seg",
         "Ter",
@@ -698,6 +696,7 @@ def montar_calendario_coletivo(
     html = '<div class="cal-grid-clickable">'
 
     for nome_dia in dias_semana:
+
         html += (
             f'<div class="cal-weekday-clickable">'
             f'{nome_dia}'
@@ -706,7 +705,7 @@ def montar_calendario_coletivo(
 
     cal = calendar.monthcalendar(
         hoje.year,
-        hoje.month,
+        hoje.month
     )
 
     for semana in cal:
@@ -714,12 +713,16 @@ def montar_calendario_coletivo(
         for dia in semana:
 
             if dia == 0:
+
                 html += '<div class="cal-empty"></div>'
+
                 continue
 
             tem_evento = dia in eventos
             eh_hoje = dia == hoje.day
-            esta_selecionado = dia == dia_selecionado
+            esta_selecionado = (
+                dia == dia_selecionado
+            )
 
             classes = ["cal-number"]
 
@@ -752,6 +755,7 @@ def montar_calendario_coletivo(
                 <div class="{numero}">
                     {dia}
                 </div>
+
                 {dot}
             </a>
             """
@@ -760,27 +764,27 @@ def montar_calendario_coletivo(
 
     return html
 
+
 # ============================================================
 # ABA 1 — MEUS LEMBRETES
 # ============================================================
+
 if menu == "🔔  Meus Lembretes":
 
     col_principal, col_lateral = st.columns(
         [2.35, 1],
-        gap="medium",
+        gap="medium"
     )
 
     # ========================================================
     # COLUNA PRINCIPAL
     # ========================================================
+
     with col_principal:
 
-        # ----------------------------------------------------
-        # NOVO LEMBRETE
-        # ----------------------------------------------------
         with st.container(
             border=True,
-            key="reminder_form",
+            key="reminder_form"
         ):
 
             st.markdown(
@@ -789,24 +793,23 @@ if menu == "🔔  Meus Lembretes":
                     💬 &nbsp;O que você precisa lembrar?
                 </div>
                 """,
-                unsafe_allow_html=True,
+                unsafe_allow_html=True
             )
 
             texto_lembrete = st.text_input(
                 "Lembrete",
-                placeholder=(
-                    "Ex: Dia 08/02 às 09:00, subir e-mail"
-                ),
+                placeholder="Ex: Dia 08/02 às 09:00, subir e-mail",
                 label_visibility="collapsed",
                 key="lembrete_texto_v9",
             )
 
             col_data, col_hora = st.columns(
                 [1, 1],
-                gap="small",
+                gap="small"
             )
 
             with col_data:
+
                 data_lembrete = st.date_input(
                     "Data",
                     value=date.today(),
@@ -815,6 +818,7 @@ if menu == "🔔  Meus Lembretes":
                 )
 
             with col_hora:
+
                 hora_lembrete = st.time_input(
                     "Horário",
                     value=datetime.now().time().replace(
@@ -827,16 +831,18 @@ if menu == "🔔  Meus Lembretes":
 
             col_check, col_btn = st.columns(
                 [1.55, 1],
-                gap="small",
+                gap="small"
             )
 
             with col_check:
+
                 recorrente = st.checkbox(
                     "Repetir este lembrete todo mês",
                     key="lembrete_recorrente_v9",
                 )
 
             with col_btn:
+
                 btn_agendar = st.button(
                     "🗓️  Agendar Lembrete →",
                     use_container_width=True,
@@ -863,11 +869,12 @@ if menu == "🔔  Meus Lembretes":
 
                     try:
 
-                        supabase.table(
-                            "lembretes"
-                        ).insert(
-                            dados_insert
-                        ).execute()
+                        (
+                            supabase
+                            .table("lembretes")
+                            .insert(dados_insert)
+                            .execute()
+                        )
 
                         st.success(
                             "Lembrete agendado com sucesso!"
@@ -887,9 +894,10 @@ if menu == "🔔  Meus Lembretes":
                         "Digite o texto do lembrete."
                     )
 
-        # ----------------------------------------------------
+        # ====================================================
         # LEMBRETES AGENDADOS
-        # ----------------------------------------------------
+        # ====================================================
+
         try:
 
             res_lembretes = (
@@ -924,7 +932,7 @@ if menu == "🔔  Meus Lembretes":
                 dt_obj = datetime.fromisoformat(
                     item["data_hora"].replace(
                         "Z",
-                        "",
+                        ""
                     )
                 )
 
@@ -956,31 +964,38 @@ if menu == "🔔  Meus Lembretes":
                     str(
                         item.get(
                             "conteudo",
-                            "",
+                            ""
                         )
                     )
                 )
 
                 linhas_tabela += f"""
                 <tr>
+
                     <td>{data_txt}</td>
+
                     <td>{hora_txt}</td>
+
                     <td>{lembrete_txt}</td>
+
                     <td>
                         <span class="{badge_class}">
                             {status}
                         </span>
                     </td>
+
                 </tr>
                 """
 
             except Exception:
+
                 continue
 
         if not linhas_tabela:
 
             linhas_tabela = """
             <tr>
+
                 <td
                     colspan="4"
                     style="
@@ -991,10 +1006,11 @@ if menu == "🔔  Meus Lembretes":
                 >
                     Nenhum lembrete agendado.
                 </td>
+
             </tr>
             """
 
-        st.html(
+        st.markdown(
             f"""
             <div class="card">
 
@@ -1005,27 +1021,38 @@ if menu == "🔔  Meus Lembretes":
                 <table class="reminder-table">
 
                     <thead>
+
                         <tr>
+
                             <th>Data</th>
+
                             <th>Horário</th>
+
                             <th>Lembrete</th>
+
                             <th>Status</th>
+
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                         {linhas_tabela}
+
                     </tbody>
 
                 </table>
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
 
     # ========================================================
     # COLUNA LATERAL
     # ========================================================
+
     with col_lateral:
 
         hoje = date.today()
@@ -1054,33 +1081,36 @@ if menu == "🔔  Meus Lembretes":
 
                     if (
                         dt_nota.year == hoje.year
-                        and dt_nota.month == hoje.month
+                        and
+                        dt_nota.month == hoje.month
                     ):
 
                         eventos_coletivos.setdefault(
                             dt_nota.day,
-                            [],
+                            []
                         ).append(
                             {
                                 "nota": str(
                                     nota.get(
                                         "nota",
-                                        "",
+                                        ""
                                     )
                                 ),
                                 "autor": str(
                                     nota.get(
                                         "autor",
-                                        "Geral",
+                                        "Geral"
                                     )
                                 ),
                             }
                         )
 
                 except Exception:
+
                     continue
 
         except Exception:
+
             pass
 
         dia_param = st.query_params.get(
@@ -1097,23 +1127,25 @@ if menu == "🔔  Meus Lembretes":
 
         except (
             TypeError,
-            ValueError,
+            ValueError
         ):
 
             dia_selecionado = None
 
-        ultimo_dia = calendar.monthrange(
-            hoje.year,
-            hoje.month,
-        )[1]
-
         if (
             dia_selecionado is not None
-            and (
+            and
+            (
                 dia_selecionado < 1
-                or dia_selecionado > ultimo_dia
+                or
+                dia_selecionado >
+                calendar.monthrange(
+                    hoje.year,
+                    hoje.month
+                )[1]
             )
         ):
+
             dia_selecionado = None
 
         meses = [
@@ -1132,7 +1164,9 @@ if menu == "🔔  Meus Lembretes":
             "Dezembro",
         ]
 
-        nome_mes = meses[hoje.month]
+        nome_mes = meses[
+            hoje.month
+        ]
 
         calendario_html = (
             montar_calendario_coletivo(
@@ -1142,31 +1176,38 @@ if menu == "🔔  Meus Lembretes":
             )
         )
 
-        st.html(
+        st.markdown(
             f"""
             <div class="calendar-card">
 
                 <div class="calendar-head">
+
                     <span>
-                        📅 &nbsp;{nome_mes} {hoje.year}
+                        📅 &nbsp;
+                        {nome_mes}
+                        {hoje.year}
                     </span>
 
                     <span class="calendar-arrow">
                         ‹ &nbsp;&nbsp; ›
                     </span>
+
                 </div>
 
                 {calendario_html}
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
 
         if dia_selecionado is not None:
 
-            compromissos = eventos_coletivos.get(
-                dia_selecionado,
-                [],
+            compromissos = (
+                eventos_coletivos.get(
+                    dia_selecionado,
+                    []
+                )
             )
 
             if compromissos:
@@ -1185,14 +1226,19 @@ if menu == "🔔  Meus Lembretes":
 
                     eventos_html += f"""
                     <div class="calendar-event">
+
                         📌 <b>{nota}</b>
-                        <span style="color:#94a3b8;">
+
+                        <span
+                            style="color:#94a3b8;"
+                        >
                             — cadastrado por {autor}
                         </span>
+
                     </div>
                     """
 
-                st.html(
+                st.markdown(
                     f"""
                     <div class="calendar-selected">
 
@@ -1204,12 +1250,13 @@ if menu == "🔔  Meus Lembretes":
                         {eventos_html}
 
                     </div>
-                    """
+                    """,
+                    unsafe_allow_html=True
                 )
 
             else:
 
-                st.html(
+                st.markdown(
                     f"""
                     <div class="calendar-selected">
 
@@ -1226,12 +1273,15 @@ if menu == "🔔  Meus Lembretes":
                         </div>
 
                     </div>
-                    """
+                    """,
+                    unsafe_allow_html=True
                 )
+
 
 # ============================================================
 # ABA 2 — CALENDÁRIO COLETIVO
 # ============================================================
+
 elif menu == "📅  Calendário Coletivo":
 
     st.markdown(
@@ -1253,10 +1303,12 @@ elif menu == "📅  Calendário Coletivo":
                 visíveis para todo o setor.
             </div>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
-    col1, col2 = st.columns([1, 2])
+    col1, col2 = st.columns(
+        [1, 2]
+    )
 
     with col1:
 
@@ -1269,9 +1321,7 @@ elif menu == "📅  Calendário Coletivo":
 
         nota_texto = st.text_input(
             "Recado ou compromisso do setor",
-            placeholder=(
-                "Ex: Reunião do DP às 14:00"
-            ),
+            placeholder="Ex: Reunião do DP às 14:00",
         )
 
     if st.button(
@@ -1283,17 +1333,20 @@ elif menu == "📅  Calendário Coletivo":
 
             try:
 
-                supabase.table(
-                    "notas_calendario"
-                ).insert(
-                    {
-                        "data": str(
-                            dia_selecionado
-                        ),
-                        "autor": usuario_ativo,
-                        "nota": nota_texto,
-                    }
-                ).execute()
+                (
+                    supabase
+                    .table("notas_calendario")
+                    .insert(
+                        {
+                            "data": str(
+                                dia_selecionado
+                            ),
+                            "autor": usuario_ativo,
+                            "nota": nota_texto,
+                        }
+                    )
+                    .execute()
+                )
 
                 st.success(
                     "Nota gravada com sucesso!"
@@ -1315,7 +1368,7 @@ elif menu == "📅  Calendário Coletivo":
 
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
     st.markdown(
@@ -1326,7 +1379,7 @@ elif menu == "📅  Calendário Coletivo":
                 📋 Recados cadastrados
             </div>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
     try:
@@ -1335,7 +1388,10 @@ elif menu == "📅  Calendário Coletivo":
             supabase
             .table("notas_calendario")
             .select("*")
-            .order("data", desc=True)
+            .order(
+                "data",
+                desc=True
+            )
             .execute()
         )
 
@@ -1347,7 +1403,7 @@ elif menu == "📅  Calendário Coletivo":
                 [
                     "data",
                     "autor",
-                    "nota",
+                    "nota"
                 ]
             ]
 
@@ -1377,12 +1433,14 @@ elif menu == "📅  Calendário Coletivo":
 
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
+
 
 # ============================================================
 # ABA 3 — MURAL
 # ============================================================
+
 elif menu == "📋  Mural da Equipe":
 
     st.markdown(
@@ -1393,7 +1451,7 @@ elif menu == "📋  Mural da Equipe":
                 📋 &nbsp;Mural da Equipe
             </div>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
     filtro_pessoa = st.selectbox(
@@ -1413,14 +1471,14 @@ elif menu == "📋  Mural da Equipe":
 
             query = query.eq(
                 "usuario",
-                filtro_pessoa,
+                filtro_pessoa
             )
 
         res_mural = (
             query
             .order(
                 "data_hora",
-                desc=True,
+                desc=True
             )
             .execute()
         )
@@ -1438,14 +1496,16 @@ elif menu == "📋  Mural da Equipe":
                     try:
 
                         dt_format = (
-                            datetime.fromisoformat(
+                            datetime
+                            .fromisoformat(
                                 item[
                                     "data_hora"
                                 ].replace(
                                     "Z",
-                                    "",
+                                    ""
                                 )
-                            ).strftime(
+                            )
+                            .strftime(
                                 "%d/%m/%Y %H:%M"
                             )
                         )
@@ -1471,31 +1531,41 @@ elif menu == "📋  Mural da Equipe":
                                 padding-top:4px;
                             "
                         >
-                            👤 <b>
-                                {item.get(
-                                    "usuario",
-                                    ""
+
+                            👤
+                            <b>
+                                {escape(
+                                    str(
+                                        item.get(
+                                            "usuario",
+                                            ""
+                                        )
+                                    )
                                 )}
                             </b>
+
                             —
-                            {item.get(
-                                "conteudo",
-                                ""
+                            {escape(
+                                str(
+                                    item.get(
+                                        "conteudo",
+                                        ""
+                                    )
+                                )
                             )}
 
                             <span
-                                style="
-                                    color:#94a3b8;
-                                "
+                                style="color:#94a3b8;"
                             >
                                 &nbsp;(
                                 {dt_format}
-                                {rec_label})
+                                {rec_label}
+                                )
                             </span>
 
                         </div>
                         """,
-                        unsafe_allow_html=True,
+                        unsafe_allow_html=True
                     )
 
                 with c2:
@@ -1506,26 +1576,22 @@ elif menu == "📋  Mural da Equipe":
 
                         st.markdown(
                             """
-                            <span
-                                class="badge badge-concluido"
-                            >
+                            <span class="badge badge-concluido">
                                 Concluído
                             </span>
                             """,
-                            unsafe_allow_html=True,
+                            unsafe_allow_html=True
                         )
 
                     else:
 
                         st.markdown(
                             """
-                            <span
-                                class="badge badge-pendente"
-                            >
+                            <span class="badge badge-pendente">
                                 Pendente
                             </span>
                             """,
-                            unsafe_allow_html=True,
+                            unsafe_allow_html=True
                         )
 
                 with c3:
@@ -1536,15 +1602,13 @@ elif menu == "📋  Mural da Equipe":
 
                         if (
                             item.get("usuario")
-                            == usuario_ativo
+                            ==
+                            usuario_ativo
                         ):
 
                             if st.button(
                                 "☑️ Concluir",
-                                key=(
-                                    f"btn_"
-                                    f"{item['id']}"
-                                ),
+                                key=f"btn_{item['id']}",
                             ):
 
                                 if item.get(
@@ -1558,38 +1622,48 @@ elif menu == "📋  Mural da Equipe":
                                                 "data_hora"
                                             ].replace(
                                                 "Z",
-                                                "",
+                                                ""
                                             )
                                         )
                                     )
 
                                     dt_prox_mes = (
                                         dt_atual
-                                        + relativedelta(
+                                        +
+                                        relativedelta(
                                             months=1
                                         )
                                     )
 
-                                    supabase.table(
-                                        "lembretes"
-                                    ).insert(
-                                        {
-                                            "usuario":
-                                                item[
-                                                    "usuario"
-                                                ],
-                                            "conteudo":
-                                                item[
-                                                    "conteudo"
-                                                ],
-                                            "data_hora":
-                                                dt_prox_mes.isoformat(),
-                                            "recorrente_mensal":
-                                                True,
-                                            "concluido":
-                                                False,
-                                        }
-                                    ).execute()
+                                    (
+                                        supabase
+                                        .table(
+                                            "lembretes"
+                                        )
+                                        .insert(
+                                            {
+                                                "usuario":
+                                                    item[
+                                                        "usuario"
+                                                    ],
+
+                                                "conteudo":
+                                                    item[
+                                                        "conteudo"
+                                                    ],
+
+                                                "data_hora":
+                                                    dt_prox_mes.isoformat(),
+
+                                                "recorrente_mensal":
+                                                    True,
+
+                                                "concluido":
+                                                    False,
+                                            }
+                                        )
+                                        .execute()
+                                    )
 
                                 (
                                     supabase
@@ -1604,7 +1678,7 @@ elif menu == "📋  Mural da Equipe":
                                     )
                                     .eq(
                                         "id",
-                                        item["id"],
+                                        item["id"]
                                     )
                                     .execute()
                                 )
@@ -1622,10 +1696,8 @@ elif menu == "📋  Mural da Equipe":
                             )
 
                 st.markdown(
-                    """
-                    <div class="soft-divider"></div>
-                    """,
-                    unsafe_allow_html=True,
+                    "<div class='soft-divider'></div>",
+                    unsafe_allow_html=True
                 )
 
         else:
@@ -1642,12 +1714,14 @@ elif menu == "📋  Mural da Equipe":
 
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
+
 
 # ============================================================
 # ABA 4 — DASHBOARD
 # ============================================================
+
 elif menu == "📊  Dashboard":
 
     st.markdown(
@@ -1670,7 +1744,7 @@ elif menu == "📊  Dashboard":
                 e lembretes individuais.
             </div>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
     try:
@@ -1681,7 +1755,7 @@ elif menu == "📊  Dashboard":
             .select("*")
             .eq(
                 "usuario",
-                usuario_ativo,
+                usuario_ativo
             )
             .execute()
         )
@@ -1698,19 +1772,23 @@ elif menu == "📊  Dashboard":
 
             concluidas = len(
                 df_dash[
-                    df_dash["concluido"] == True
+                    df_dash["concluido"]
+                    == True
                 ]
             )
 
             pendentes = (
                 total_tarefas
-                - concluidas
+                -
+                concluidas
             )
 
             taxa_sucesso = (
                 concluidas
-                / total_tarefas
-                * 100
+                /
+                total_tarefas
+                *
+                100
                 if total_tarefas > 0
                 else 0.0
             )
@@ -1738,10 +1816,8 @@ elif menu == "📊  Dashboard":
             )
 
             st.markdown(
-                """
-                <div class="soft-divider"></div>
-                """,
-                unsafe_allow_html=True,
+                "<div class='soft-divider'></div>",
+                unsafe_allow_html=True
             )
 
             st.markdown(
@@ -1751,22 +1827,20 @@ elif menu == "📊  Dashboard":
             st.progress(
                 min(
                     taxa_sucesso / 100,
-                    1.0,
+                    1.0
                 )
             )
 
             if taxa_sucesso == 100:
 
                 st.success(
-                    "Parabéns! Todas as tarefas "
-                    "foram concluídas!"
+                    "Parabéns! Todas as tarefas foram concluídas!"
                 )
 
             elif taxa_sucesso >= 70:
 
                 st.info(
-                    "Excelente ritmo de entregas "
-                    "no setor!"
+                    "Excelente ritmo de entregas no setor!"
                 )
 
             else:
@@ -1778,8 +1852,7 @@ elif menu == "📊  Dashboard":
         else:
 
             st.info(
-                "Nenhum dado registrado "
-                "para gerar métricas."
+                "Nenhum dado registrado para gerar métricas."
             )
 
     except Exception as e:
@@ -1790,12 +1863,14 @@ elif menu == "📊  Dashboard":
 
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
+
 
 # ============================================================
 # ABA 5 — GERENCIAR EQUIPE
 # ============================================================
+
 elif menu == "⚙️  Gerenciar Equipe":
 
     st.markdown(
@@ -1817,7 +1892,7 @@ elif menu == "⚙️  Gerenciar Equipe":
                 utilizar o sistema.
             </div>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
     novo_nome = st.text_input(
@@ -1834,17 +1909,19 @@ elif menu == "⚙️  Gerenciar Equipe":
 
             try:
 
-                supabase.table(
-                    "colaboradores"
-                ).insert(
-                    {
-                        "nome": novo_nome
-                    }
-                ).execute()
+                (
+                    supabase
+                    .table("colaboradores")
+                    .insert(
+                        {
+                            "nome": novo_nome
+                        }
+                    )
+                    .execute()
+                )
 
                 st.success(
-                    f"{novo_nome} adicionado "
-                    "com sucesso!"
+                    f"{novo_nome} adicionado com sucesso!"
                 )
 
                 st.cache_data.clear()
@@ -1854,8 +1931,7 @@ elif menu == "⚙️  Gerenciar Equipe":
             except Exception:
 
                 st.error(
-                    "Nome já cadastrado "
-                    "ou erro ao salvar."
+                    "Nome já cadastrado ou erro ao salvar."
                 )
 
         else:
@@ -1866,6 +1942,5 @@ elif menu == "⚙️  Gerenciar Equipe":
 
     st.markdown(
         "</div>",
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
-```
