@@ -177,6 +177,75 @@ div[role="radiogroup"] > label {
     font-weight: 750;
 }
 
+/* ---------- NOVO LEMBRETE — VISUAL DA REFERÊNCIA ---------- */
+.reminder-form-card {
+    background: #ffffff;
+    border: 1px solid #e4e9ef;
+    border-radius: 6px;
+    padding: 14px 16px 13px 16px;
+    box-shadow: 0 1px 4px rgba(15,23,42,.045);
+    margin-bottom: 12px;
+}
+
+.reminder-form-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #17395f;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 11px;
+}
+
+.reminder-form-title-icon {
+    font-size: 15px;
+    line-height: 1;
+    filter: saturate(.65);
+}
+
+.reminder-form-card div[data-testid="stTextInput"] {
+    margin-bottom: 10px !important;
+}
+
+.reminder-form-card div[data-testid="stTextInput"] input {
+    height: 38px !important;
+    min-height: 38px !important;
+    border: 1px solid #dce5ee !important;
+    border-radius: 5px !important;
+    padding: 0 12px !important;
+    color: #334155 !important;
+    font-size: 11px !important;
+}
+
+.reminder-form-card div[data-testid="stCheckbox"] {
+    margin-top: 2px !important;
+}
+
+.reminder-form-card div[data-testid="stCheckbox"] label {
+    color: #526b86 !important;
+    font-size: 11px !important;
+}
+
+.reminder-form-card .stButton {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+.reminder-form-card .stButton > button {
+    width: 168px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+/* Os campos técnicos continuam existindo para a lógica atual,
+   mas ficam fora da composição visual da referência. */
+.reminder-form-card .date-time-row {
+    display: none !important;
+}
+
 .section-title {
     color: #1e3a5f;
     font-size: 15px;
@@ -703,10 +772,14 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         # CARD — NOVO LEMBRETE
-        st.markdown(textwrap.dedent("""
-        <div class="card">
-            <div class="card-title">💬 &nbsp;O que você precisa lembrar?</div>
-        """), unsafe_allow_html=True)
+        # Visual seguindo exatamente a referência enviada.
+        st.markdown("""
+        <div class="reminder-form-card">
+            <div class="reminder-form-title">
+                <span class="reminder-form-title-icon">💬</span>
+                <span>O que você precisa lembrar?</span>
+            </div>
+        """, unsafe_allow_html=True)
 
         texto_lembrete = st.text_input(
             "Lembrete",
@@ -714,6 +787,9 @@ if menu == "🔔  Meus Lembretes":
             label_visibility="collapsed",
         )
 
+        # Mantemos data/hora para não quebrar a lógica atual do Supabase.
+        # A apresentação desses campos será ocultada visualmente.
+        st.markdown('<div class="date-time-row">', unsafe_allow_html=True)
         col_data, col_hora = st.columns([1, 1])
 
         with col_data:
@@ -729,11 +805,14 @@ if menu == "🔔  Meus Lembretes":
                 value=datetime.now().time().replace(second=0, microsecond=0),
                 label_visibility="collapsed",
             )
+        st.markdown('</div>', unsafe_allow_html=True)
 
         col_check, col_btn = st.columns([1.55, 1])
 
         with col_check:
-            recorrente = st.checkbox("Repetir este lembrete todo mês")
+            recorrente = st.checkbox(
+                "Repetir este lembrete todo mês"
+            )
 
         with col_btn:
             btn_agendar = st.button(
