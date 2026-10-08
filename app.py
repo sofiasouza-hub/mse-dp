@@ -104,54 +104,6 @@ div[data-testid="stVerticalBlock"] {
     margin-bottom: -7px;
 }
 
-/* ---------- MENU ---------- */
-.nav-wrap {
-    background: transparent;
-    margin-bottom: 13px;
-}
-
-/* Radio horizontal usado como menu */
-div[data-testid="stHorizontalBlock"] {
-    gap: 10px;
-}
-
-div[role="radiogroup"] {
-    gap: 7px !important;
-    background: transparent !important;
-}
-
-div[role="radiogroup"] > label {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 5px !important;
-    min-height: 38px !important;
-    padding: 0 17px !important;
-    box-shadow: 0 1px 2px rgba(15,23,42,.04);
-    color: #475569 !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-}
-
-div[role="radiogroup"] > label:hover {
-    border-color: #cbd5e1 !important;
-}
-
-div[role="radiogroup"] > label:has(input:checked) {
-    background: #dc2638 !important;
-    border-color: #dc2638 !important;
-    color: white !important;
-    box-shadow: 0 2px 5px rgba(220,38,56,.18);
-}
-
-div[role="radiogroup"] > label input {
-    display: none !important;
-}
-
-div[role="radiogroup"] > label > div:first-child { display: none !important; }
-div[role="radiogroup"] > label {
-    cursor: pointer !important;
-}
-
 /* ---------- MENU PRINCIPAL ---------- */
 div[role="radiogroup"] {
     gap: 7px !important;
@@ -213,7 +165,7 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     font-weight: 750;
 }
 
-/* ---------- NOVO LEMBRETE — VISUAL DA REFERÊNCIA ---------- */
+/* ---------- NOVO LEMBRETE ---------- */
 .st-key-reminder_form {
     background: #ffffff !important;
     border: 1px solid #e4e9ef !important;
@@ -233,38 +185,7 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin: 0 0 10px 0;
 }
 
-.st-key-reminder_form .reminder-form-title-icon {
-    font-size: 15px;
-    line-height: 1;
-    filter: saturate(.65);
-}
-
-.st-key-reminder_form div[data-testid="stTextInput"] {
-    margin-bottom: 9px !important;
-}
-
-.st-key-reminder_form div[data-testid="stTextInput"] input {
-    height: 38px !important;
-    min-height: 38px !important;
-    border: 1px solid #dce5ee !important;
-    border-radius: 5px !important;
-    padding: 0 12px !important;
-    color: #334155 !important;
-    font-size: 11px !important;
-    background: #ffffff !important;
-}
-
-.st-key-reminder_form div[data-testid="stTextInput"] input::placeholder {
-    color: #9aaec3 !important;
-}
-
-/* Data e hora ficam visíveis em duas caixas separadas. */
-.st-key-reminder_form div[data-testid="stDateInput"],
-.st-key-reminder_form div[data-testid="stTimeInput"] {
-    display: block !important;
-    margin-bottom: 9px !important;
-}
-
+.st-key-reminder_form div[data-testid="stTextInput"] input,
 .st-key-reminder_form div[data-testid="stDateInput"] input,
 .st-key-reminder_form div[data-testid="stTimeInput"] input {
     height: 38px !important;
@@ -277,33 +198,12 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     background: #ffffff !important;
 }
 
-/* Mantém a linha inferior compacta. */
-.st-key-reminder_form div[data-testid="stCheckbox"] {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
 .st-key-reminder_form div[data-testid="stCheckbox"] label {
     color: #526b86 !important;
     font-size: 11px !important;
 }
 
-.st-key-reminder_form .stButton {
-    display: flex !important;
-    justify-content: flex-end !important;
-}
-
-.st-key-reminder_form .stButton > button {
-    width: 168px !important;
-    min-height: 36px !important;
-    height: 36px !important;
-    border-radius: 5px !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    margin-top: 0 !important;
-}
-
-/* ---------- INPUTS ---------- */
+/* ---------- INPUTS E BOTÕES ---------- */
 div[data-testid="stTextInput"] input,
 div[data-testid="stDateInput"] input,
 div[data-testid="stTimeInput"] input,
@@ -315,15 +215,10 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     font-size: 12px !important;
 }
 
-div[data-testid="stTextInput"] input::placeholder {
-    color: #a0aec0 !important;
-}
-
-/* ---------- BOTÕES ---------- */
 .stButton > button {
     border-radius: 5px !important;
     border: 1px solid #dbe3ec !important;
-    min-height: 35px !important;
+    min-height: 32px !important;
     font-size: 12px !important;
     font-weight: 650 !important;
     background: #ffffff !important;
@@ -336,54 +231,7 @@ div[data-testid="stTextInput"] input::placeholder {
     color: white !important;
 }
 
-.stButton > button:hover {
-    border-color: #dc2638 !important;
-    color: #dc2638 !important;
-}
-
-.stButton > button[kind="primary"]:hover {
-    color: white !important;
-    background: #c81f32 !important;
-}
-
-/* ---------- CHECKBOX ---------- */
-div[data-testid="stCheckbox"] label {
-    font-size: 11px !important;
-    color: #64748b !important;
-}
-
-/* ---------- PRÓXIMO LEMBRETE ---------- */
-.next-card {
-    background: #fff7f7;
-    border: 1px solid #f7d9dc;
-    border-left: 3px solid #dc2638;
-    border-radius: 7px;
-    padding: 15px 17px;
-    margin-bottom: 12px;
-}
-
-.next-label {
-    color: #dc2638;
-    font-size: 13px;
-    font-weight: 750;
-}
-
-.next-time {
-    color: #dc2638;
-    font-size: 25px;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-top: 7px;
-}
-
-.next-text {
-    color: #334155;
-    font-size: 12px;
-    font-weight: 650;
-    margin-top: 4px;
-}
-
-/* ---------- CALENDÁRIO ---------- */
+/* ---------- CALENDÁRIO LATERAL NATIVO ---------- */
 .calendar-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -399,62 +247,88 @@ div[data-testid="stCheckbox"] label {
     color: #1e3a5f;
     font-size: 14px;
     font-weight: 750;
-    margin-bottom: 13px;
+    margin-bottom: 10px;
 }
 
-.calendar-arrow-btn {
-    color: #64748b !important;
-    font-size: 16px !important;
-    text-decoration: none !important;
-    font-weight: 700 !important;
-    padding: 0 4px;
-}
-
-.calendar-arrow-btn:hover {
-    color: #dc2638 !important;
-}
-
-.cal-grid {
+.cal-grid-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 2px;
     text-align: center;
+    margin-bottom: 6px;
 }
 
 .cal-weekday {
     color: #94a3b8;
-    font-size: 9px;
-    font-weight: 700;
-    padding-bottom: 4px;
-}
-
-.cal-day {
-    min-height: 25px;
     font-size: 10px;
+    font-weight: 700;
+}
+
+/* Botões do grid de dias do calendário */
+div[data-testid="stColumn"] .cal-day-btn button {
+    width: 100% !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: transparent !important;
+    color: #475569 !important;
+}
+
+div[data-testid="stColumn"] .cal-day-btn-today button {
+    width: 100% !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    border-radius: 50% !important;
+    background: #dc2638 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    border: none !important;
+}
+
+div[data-testid="stColumn"] .cal-day-btn-event button {
+    position: relative !important;
+    color: #dc2638 !important;
+    font-weight: 800 !important;
+}
+
+/* Botões de navegação < e > */
+.cal-nav-btn button {
+    min-height: 24px !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+    background: #ffffff !important;
+}
+
+.calendar-selected {
+    margin-top: 10px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid #dc2638;
+    border-radius: 6px;
+    padding: 10px 11px;
+}
+
+.calendar-selected-title {
+    color: #1e3a5f;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.calendar-event {
     color: #475569;
-    padding-top: 2px;
-}
-
-.cal-day-number {
-    width: 22px;
-    height: 22px;
-    line-height: 22px;
-    margin: auto;
-    border-radius: 50%;
-}
-
-.cal-today {
-    background: #dc2638;
-    color: white;
-    font-weight: 750;
-}
-
-.cal-dot {
-    width: 4px;
-    height: 4px;
-    background: #dc2638;
-    border-radius: 50%;
-    margin: 1px auto 0;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #edf2f7;
 }
 
 /* ---------- TABELA ---------- */
@@ -481,17 +355,6 @@ div[data-testid="stCheckbox"] label {
     border-bottom: 1px solid #edf2f7;
 }
 
-.reminder-table td:nth-child(2),
-.reminder-table th:nth-child(2) {
-    width: 80px;
-}
-
-.reminder-table td:nth-child(4),
-.reminder-table th:nth-child(4) {
-    text-align: center;
-    width: 90px;
-}
-
 .badge {
     display: inline-block;
     padding: 3px 10px;
@@ -510,206 +373,10 @@ div[data-testid="stCheckbox"] label {
     color: #059669;
 }
 
-/* ---------- MÉTRICAS ---------- */
-div[data-testid="stMetric"] {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    padding: 12px;
-}
-
-div[data-testid="stMetricLabel"] {
-    font-size: 11px !important;
-}
-
-/* ---------- TABELAS NATIVAS ---------- */
-div[data-testid="stDataFrame"] {
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-/* Formulário do lembrete */
-.reminder-form-title {
-    color: #123b66;
-    font-size: 15px;
-    font-weight: 800;
-    padding: 2px 0 10px 0;
-}
-
-div[data-testid="stTextInput"] input {
-    min-height: 40px !important;
-}
-
-/* ---------- CALENDÁRIO CLICÁVEL ---------- */
-.cal-grid-clickable {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    text-align: center;
-}
-
-.cal-weekday-clickable {
-    color: #94a3b8;
-    font-size: 9px;
-    font-weight: 700;
-    padding-bottom: 5px;
-}
-
-.cal-empty {
-    min-height: 31px;
-}
-
-.cal-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 31px;
-    color: #475569 !important;
-    text-decoration: none !important;
-    font-size: 10px;
-    line-height: 21px;
-    border-radius: 50%;
-}
-
-.cal-link:hover {
-    color: #dc2638 !important;
-}
-
-.cal-number {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    border-radius: 50%;
-}
-
-.cal-number.today {
-    background: #dc2638;
-    color: #ffffff;
-    font-weight: 800;
-}
-
-.cal-number.selected {
-    outline: 2px solid #dc2638;
-    outline-offset: 1px;
-    font-weight: 800;
-}
-
-.cal-dot-red {
-    width: 4px;
-    height: 4px;
-    background: #dc2638;
-    border-radius: 50%;
-    margin-top: 1px;
-}
-
-.calendar-selected {
-    margin-top: 10px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-left: 3px solid #dc2638;
-    border-radius: 6px;
-    padding: 10px 11px;
-}
-
-.calendar-selected-title {
-    color: #1e3a5f;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 7px;
-}
-
-.calendar-event {
-    color: #475569;
-    font-size: 11px;
-    padding: 4px 0;
-    border-bottom: 1px solid #edf2f7;
-}
-
-.calendar-event:last-child {
-    border-bottom: none;
-}
-
-/* ---------- DIVISÓRIA ---------- */
 .soft-divider {
     height: 1px;
     background: #edf2f7;
     margin: 8px 0 12px;
-}
-
-/* ---------- RESPONSIVO ---------- */
-@media (max-width: 900px) {
-    .block-container {
-        padding: 12px;
-    }
-
-    .top-status {
-        gap: 8px;
-        font-size: 10px;
-    }
-
-    div[role="radiogroup"] {
-        flex-wrap: wrap !important;
-    }
-}
-
-/* ===== MENU SUPERIOR — CADA ITEM É UM QUADRADINHO ===== */
-div[role="radiogroup"] {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    align-items: center !important;
-    margin: 8px 0 16px 0 !important;
-}
-
-div[role="radiogroup"] > label {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: auto !important;
-    min-height: 34px !important;
-    padding: 0 13px !important;
-    margin: 0 !important;
-    border: 1px solid #d9dee7 !important;
-    border-radius: 5px !important;
-    background: #ffffff !important;
-    color: #334155 !important;
-    cursor: pointer !important;
-    box-sizing: border-box !important;
-    transition: all .15s ease !important;
-}
-
-/* Esconde completamente a bolinha do radio */
-div[role="radiogroup"] > label > div:first-child,
-div[role="radiogroup"] input[type="radio"] {
-    display: none !important;
-}
-
-/* O texto inteiro fica dentro do quadradinho */
-div[role="radiogroup"] > label p,
-div[role="radiogroup"] > label span {
-    color: inherit !important;
-    margin: 0 !important;
-    font-size: 13px !important;
-}
-
-/* Passando o mouse */
-div[role="radiogroup"] > label:hover {
-    border-color: #e52a3b !important;
-    color: #d92335 !important;
-    background: #ffffff !important;
-}
-
-/* ABA SELECIONADA:
-   a borda vermelha envolve TODA a opção, inclusive a letra */
-div[role="radiogroup"] > label:has(input:checked) {
-    border: 2px solid #e52a3b !important;
-    border-radius: 5px !important;
-    background: #ffffff !important;
-    color: #d92335 !important;
-    font-weight: 700 !important;
-    padding: 0 12px !important;
-    box-shadow: none !important;
 }
 </style>
 """), unsafe_allow_html=True)
@@ -811,53 +478,6 @@ menu = st.radio(
 )
 
 st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
-
-
-# ============================================================
-# FUNÇÕES — CALENDÁRIO COLETIVO
-# ============================================================
-def montar_calendario_coletivo(ano, mes, eventos, dia_selecionado=None):
-    dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
-    hoje = date.today()
-
-    html = '<div class="cal-grid-clickable">'
-
-    for nome_dia in dias_semana:
-        html += f'<div class="cal-weekday-clickable">{nome_dia}</div>'
-
-    cal = calendar.monthcalendar(ano, mes)
-
-    for semana in cal:
-        for dia in semana:
-            if dia == 0:
-                html += '<div class="cal-empty"></div>'
-                continue
-
-            tem_evento = dia in eventos
-            eh_hoje = (dia == hoje.day and mes == hoje.month and ano == hoje.year)
-            esta_selecionado = dia == dia_selecionado
-
-            classes = ["cal-number"]
-            if eh_hoje:
-                classes.append("today")
-            if esta_selecionado:
-                classes.append("selected")
-
-            numero = " ".join(classes)
-
-            dot = '<div class="cal-dot-red"></div>' if tem_evento else ""
-
-            href = f"?cal_day={dia}&cal_month={mes}&cal_year={ano}"
-
-            html += f"""
-            <a class="cal-link" href="{href}" title="Ver compromissos do dia {dia}">
-                <div class="{numero}">{dia}</div>
-                {dot}
-            </a>
-            """
-
-    html += "</div>"
-    return html
 
 
 # ============================================================
@@ -1026,7 +646,7 @@ if menu == "🔔  Meus Lembretes":
         """)
 
     # --------------------------------------------------------
-    # COLUNA LATERAL — CALENDÁRIO COLETIVO
+    # COLUNA LATERAL — CALENDÁRIO COLETIVO INTERATIVO NATIVO
     # --------------------------------------------------------
     with col_lateral:
         hoje = date.today()
@@ -1037,6 +657,9 @@ if menu == "🔔  Meus Lembretes":
 
         cal_m = st.session_state.cal_month
         cal_y = st.session_state.cal_year
+
+        if "selected_day" not in st.session_state:
+            st.session_state.selected_day = None
 
         eventos_coletivos = {}
 
@@ -1072,25 +695,6 @@ if menu == "🔔  Meus Lembretes":
         except Exception:
             pass
 
-        dia_param = st.query_params.get("cal_day")
-
-        try:
-            dia_selecionado = int(dia_param) if dia_param else None
-        except (TypeError, ValueError):
-            dia_selecionado = None
-
-        if (
-            dia_selecionado is not None
-            and (
-                dia_selecionado < 1
-                or dia_selecionado > calendar.monthrange(
-                    cal_y,
-                    cal_m,
-                )[1]
-            )
-        ):
-            dia_selecionado = None
-
         meses = [
             "",
             "Janeiro", "Fevereiro", "Março", "Abril",
@@ -1100,45 +704,70 @@ if menu == "🔔  Meus Lembretes":
 
         nome_mes = meses[cal_m]
 
-        calendario_html = montar_calendario_coletivo(
-            cal_y,
-            cal_m,
-            eventos_coletivos,
-            dia_selecionado,
-        )
+        # Card Branco unificado para o calendário
+        with st.container():
+            st.markdown('<div class="calendar-card">', unsafe_allow_html=True)
+            col_tit, col_prev, col_next = st.columns([3.2, 0.4, 0.4])
 
-        # Checa e processa cliques de navegação pelas setinhas na URL
-        if st.query_params.get("cal_prev"):
-            if st.session_state.cal_month == 1:
-                st.session_state.cal_month = 12
-                st.session_state.cal_year -= 1
-            else:
-                st.session_state.cal_month -= 1
-            st.query_params.clear()
-            st.rerun()
+            with col_tit:
+                st.markdown(f'<div style="color:#1e3a5f;font-size:14px;font-weight:750;padding-top:2px;">📅 &nbsp;{nome_mes} {cal_y}</div>', unsafe_allow_html=True)
 
-        if st.query_params.get("cal_next"):
-            if st.session_state.cal_month == 12:
-                st.session_state.cal_month = 1
-                st.session_state.cal_year += 1
-            else:
-                st.session_state.cal_month += 1
-            st.query_params.clear()
-            st.rerun()
+            with col_prev:
+                st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
+                if st.button("‹", key="btn_cal_prev"):
+                    if st.session_state.cal_month == 1:
+                        st.session_state.cal_month = 12
+                        st.session_state.cal_year -= 1
+                    else:
+                        st.session_state.cal_month -= 1
+                    st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
 
-        # Renderização do card branco unificado com as setinhas de navegação
-        st.markdown(f"""
-        <div class="calendar-card">
-            <div class="calendar-head">
-                <span>📅 &nbsp;{nome_mes} {cal_y}</span>
-                <div>
-                    <a href="?cal_prev=1" class="calendar-arrow-btn">‹</a>
-                    <a href="?cal_next=1" class="calendar-arrow-btn">›</a>
-                </div>
+            with col_next:
+                st.markdown('<div class="cal-nav-btn">', unsafe_allow_html=True)
+                if st.button("›", key="btn_cal_next"):
+                    if st.session_state.cal_month == 12:
+                        st.session_state.cal_month = 1
+                        st.session_state.cal_year += 1
+                    else:
+                        st.session_state.cal_month += 1
+                    st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            # Cabeçalho dos dias da semana
+            st.markdown("""
+            <div class="cal-grid-header">
+                <div class="cal-weekday">Seg</div>
+                <div class="cal-weekday">Ter</div>
+                <div class="cal-weekday">Qua</div>
+                <div class="cal-weekday">Qui</div>
+                <div class="cal-weekday">Sex</div>
+                <div class="cal-weekday">Sáb</div>
+                <div class="cal-weekday">Dom</div>
             </div>
-            {calendario_html}
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
+
+            # Matriz de dias do mês
+            cal = calendar.monthcalendar(cal_y, cal_m)
+
+            for semana in cal:
+                cols = st.columns(7)
+                for idx, dia in enumerate(semana):
+                    if dia != 0:
+                        eh_hoje = (dia == hoje.day and cal_m == hoje.month and cal_y == hoje.year)
+                        tem_evento = dia in eventos_coletivos
+
+                        btn_class = "cal-day-btn-today" if eh_hoje else ("cal-day-btn-event" if tem_evento else "cal-day-btn")
+                        
+                        cols[idx].markdown(f'<div class="{btn_class}">', unsafe_allow_html=True)
+                        if cols[idx].button(str(dia), key=f"cal_day_{cal_y}_{cal_m}_{dia}"):
+                            st.session_state.selected_day = dia
+                            st.rerun()
+                        cols[idx].markdown('</div>', unsafe_allow_html=True)
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        dia_selecionado = st.session_state.selected_day
 
         if dia_selecionado is not None:
             compromissos = eventos_coletivos.get(
