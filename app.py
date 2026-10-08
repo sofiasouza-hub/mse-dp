@@ -7,98 +7,125 @@ from supabase import create_client, Client
 # Configuração da Página
 st.set_page_config(page_title="MSE | DP", page_icon="🔴", layout="wide")
 
-# Estilização CSS para réplica do layout da imagem
+# Estilização CSS para forçar o tema claro e contraste correto
 st.markdown("""
     <style>
-        .main { background-color: #ECEFF1; }
-        .stApp { background-color: #ECEFF1; }
+        /* Forçar fundo claro na aplicação inteira */
+        .stApp, .main, [data-testid="stAppViewContainer"] {
+            background-color: #F4F6F8 !important;
+            color: #111827 !important;
+        }
         
+        /* Garantir cor visível nos títulos e textos */
+        h1, h2, h3, h4, h5, h6, p, label, span, div {
+            color: #111827 !important;
+        }
+
         /* Topbar */
         .topbar {
-            background-color: #1B2430;
-            padding: 12px 25px;
-            border-radius: 6px;
-            color: white;
+            background-color: #1E293B !important;
+            padding: 14px 24px;
+            border-radius: 8px;
+            color: white !important;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .logo-text { font-size: 24px; font-weight: bold; color: #E53935; }
-        .dept-text { font-size: 20px; font-weight: bold; color: #FFFFFF; margin-left: 8px; }
+        .topbar * { color: white !important; }
+        .logo-text { font-size: 26px; font-weight: bold; color: #EF4444 !important; }
+        .dept-text { font-size: 22px; font-weight: bold; color: #FFFFFF !important; margin-left: 8px; }
         
-        /* Cards */
+        /* Estilo dos Cards em Fundo Branco */
         .css-card {
-            background-color: #FFFFFF;
+            background-color: #FFFFFF !important;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid #E5E7EB;
         }
-        
+
         .card-prox-lembrete {
-            background-color: #FFF5F5;
-            border: 1px solid #FFE3E3;
+            background-color: #FEF2F2 !important;
+            border: 1px solid #FECACA !important;
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+        
         .time-highlight {
-            font-size: 38px;
-            font-weight: 800;
-            color: #D32F2F;
-            margin: 10px 0;
+            font-size: 40px !important;
+            font-weight: 800 !important;
+            color: #DC2626 !important;
+            margin: 8px 0;
         }
         
-        /* Botões */
+        /* Estilização dos Inputs e Botões */
+        .stTextInput input, .stSelectbox select, .stDateInput input, .stTimeInput input {
+            background-color: #FFFFFF !important;
+            color: #111827 !important;
+            border: 1px solid #D1D5DB !important;
+            border-radius: 6px !important;
+        }
+        
         .stButton>button {
-            background-color: #D32F2F;
-            color: white;
-            border-radius: 6px;
-            font-weight: bold;
-            border: none;
-            padding: 8px 16px;
+            background-color: #DC2626 !important;
+            color: #FFFFFF !important;
+            border-radius: 6px !important;
+            font-weight: bold !important;
+            border: none !important;
+            padding: 8px 16px !important;
         }
-        .stButton>button:hover { background-color: #B71C1C; color: white; }
-        
+        .stButton>button:hover { background-color: #B91C1C !important; }
+        .stButton>button * { color: #FFFFFF !important; }
+
+        /* Abas superiores */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 12px;
+        }
+        .stTabs [data-baseweb="tab"] {
+            background-color: #FFFFFF !important;
+            border-radius: 8px 8px 0 0 !important;
+            padding: 10px 20px !important;
+            font-weight: bold !important;
+            color: #4B5563 !important;
+            border: 1px solid #E5E7EB !important;
+        }
+        .stTabs [aria-selected="true"] {
+            background-color: #DC2626 !important;
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+        .stTabs [aria-selected="true"] * {
+            color: #FFFFFF !important;
+        }
+
         /* Calendário Customizado */
         .cal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-weight: bold;
             font-size: 16px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: #111827 !important;
         }
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 6px;
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
         }
-        .cal-day-name { font-weight: bold; color: #78909C; padding-bottom: 5px; }
+        .cal-day-name { font-weight: bold; color: #6B7280 !important; padding-bottom: 4px; }
         .cal-day {
             padding: 6px 0;
             border-radius: 50%;
-            position: relative;
-            color: #37474F;
+            color: #1F2937 !important;
         }
         .cal-day-active {
-            background-color: #D32F2F;
-            color: white;
+            background-color: #DC2626 !important;
+            color: #FFFFFF !important;
             font-weight: bold;
-        }
-        .cal-dot {
-            height: 4px;
-            width: 4px;
-            background-color: #D32F2F;
-            border-radius: 50%;
-            display: inline-block;
-            position: absolute;
-            bottom: 2px;
-            left: 45%;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -133,7 +160,7 @@ st.markdown("""
             <span class="logo-text">MSE</span>
             <span class="dept-text">| DP</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 20px;">
+        <div>
             <span>🟢 Nuvem Conectada</span>
         </div>
     </div>
@@ -150,167 +177,32 @@ if not usuario_ativo:
 # --- NAVEGAÇÃO POR ABAS ---
 aba1, aba2, aba3, aba4 = st.tabs(["🔔 Meus Lembretes", "📅 Calendário Coletivo", "📋 Mural da Equipe", "⚙️ Gerenciar Equipe"])
 
-# --- ABA 1: MEUS LEMBRETES (LAYOUT IDÊNTICO À IMAGEM) ---
+# --- ABA 1: MEUS LEMBRETES ---
 with aba1:
     col_principal, col_lateral = st.columns([2.2, 1])
     
     with col_principal:
-        # Card 1: Formulário
-        with st.container():
-            st.subheader("💬 O que você precisa lembrar?")
+        st.subheader("💬 O que você precisa lembrar?")
+        
+        c_input, c_data, c_hora = st.columns([2, 1, 1])
+        with c_input:
+            texto_lembrete = st.text_input("Lembrete", placeholder="Ex: Dia 08/02 às 09:00, subir e-mail", label_visibility="collapsed")
+        with c_data:
+            data_lembrete = st.date_input("Data", value=date.today(), label_visibility="collapsed")
+        with c_hora:
+            hora_lembrete = st.time_input("Horário", label_visibility="collapsed")
             
-            c_input, c_data, c_hora = st.columns([2, 1, 1])
-            with c_input:
-                texto_lembrete = st.text_input("Lembrete", placeholder="Ex: Dia 08/02 às 09:00, subir e-mail", label_visibility="collapsed")
-            with c_data:
-                data_lembrete = st.date_input("Data", value=date.today(), label_visibility="collapsed")
-            with c_hora:
-                hora_lembrete = st.time_input("Horário", label_visibility="collapsed")
-                
-            col_check, col_btn = st.columns([2, 1])
-            with col_check:
-                recorrente = st.checkbox("Repetir este lembrete todo mês")
-            with col_btn:
-                btn_agendar = st.button("🗓️ Agendar Lembrete →", use_container_width=True)
-                
-            if btn_agendar:
-                if texto_lembrete:
-                    dt_completa = datetime.combine(data_lembrete, hora_lembrete).isoformat()
-                    supabase.table("lembretes").insert({
-                        "usuario": usuario_ativo,
-                        "conteudo": texto_lembrete,
-                        "data_hora": dt_completa,
-                        "recorrente_mensal": recorrente
-                    }).execute()
-                    st.success("Lembrete agendado!")
-                    st.rerun()
-                else:
-                    st.warning("Digite o texto do lembrete.")
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        # Card 2: Tabela de Lembretes Agendados
-        st.subheader("📋 Seus Lembretes Agendados")
-        res_lembretes = supabase.table("lembretes").select("*").eq("usuario", usuario_ativo).order("data_hora").execute()
-        
-        if res_lembretes.data:
-            dados_tabela = []
-            for item in res_lembretes.data:
-                dt_obj = datetime.fromisoformat(item['data_hora'].replace('Z', ''))
-                dados_tabela.append({
-                    "Data": dt_obj.strftime('%d/%m/%Y'),
-                    "Horário": dt_obj.strftime('%H:%M'),
-                    "Lembrete": item['conteudo'],
-                    "Status": "🟢 Concluído" if item['concluido'] else "🟡 Pendente"
-                })
-            df_exibir = pd.DataFrame(dados_tabela)
-            st.dataframe(df_exibir, use_container_width=True, hide_index=True)
-        else:
-            st.info(f"Nenhum lembrete agendado para {usuario_ativo}")
-
-    with col_lateral:
-        # Card Lateral 1: Próximo Lembrete
-        res_prox = supabase.table("lembretes").select("*").eq("usuario", usuario_ativo).eq("concluido", False).order("data_hora").limit(1).execute()
-        
-        st.markdown("""
-            <div class="card-prox-lembrete">
-                <div style="color: #D32F2F; font-weight: bold; font-size: 16px;">🔔 Próximo Lembrete</div>
-        """, unsafe_allow_html=True)
-        
-        if res_prox.data:
-            prox = res_prox.data[0]
-            dt = datetime.fromisoformat(prox['data_hora'].replace('Z', ''))
-            st.markdown(f"""
-                <div class="time-highlight">⏰ {dt.strftime('%H:%M')}</div>
-                <div style="color: #37474F; font-weight: 600;">{prox['conteudo']}</div>
-                <div style="color: #78909C; font-size: 12px; margin-top: 5px;">Data: {dt.strftime('%d/%m/%Y')}</div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-                <div class="time-highlight">--:--</div>
-                <div style="color: #78909C;">Sem lembretes pendentes</div>
-            """, unsafe_allow_html=True)
+        col_check, col_btn = st.columns([2, 1])
+        with col_check:
+            recorrente = st.checkbox("Repetir este lembrete todo mês")
+        with col_btn:
+            btn_agendar = st.button("🗓️ Agendar Lembrete →", use_container_width=True)
             
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Card Lateral 2: Calendário Visual do Mês
-        st.markdown('<div class="css-card">', unsafe_allow_html=True)
-        hoje = date.today()
-        st.markdown(f'<div class="cal-header"><span>📅 {hoje.strftime("%B %Y").capitalize()}</span></div>', unsafe_allow_html=True)
-        
-        # Grid de Dias
-        dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
-        grid_html = '<div class="cal-grid">'
-        for d in dias_semana:
-            grid_html += f'<div class="cal-day-name">{d}</div>'
-            
-        cal = calendar.monthcalendar(hoje.year, hoje.month)
-        for semana in cal:
-            for dia in semana:
-                if dia == 0:
-                    grid_html += '<div></div>'
-                else:
-                    is_today = (dia == hoje.day)
-                    cls = "cal-day cal-day-active" if is_today else "cal-day"
-                    grid_html += f'<div class="{cls}">{dia}</div>'
-        grid_html += '</div>'
-        
-        st.markdown(grid_html, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# --- ABA 2: CALENDÁRIO COLETIVO ---
-with aba2:
-    st.subheader("📅 Calendário Coletivo do DP")
-    dia_selecionado = st.date_input("Selecione um dia para adicionar recado da equipe", value=date.today())
-    nota_texto = st.text_input("Nota ou recado para o dia selecionado")
-    if st.button("Salvar no Calendário"):
-        if nota_texto:
-            supabase.table("notas_calendario").insert({
-                "data": str(dia_selecionado),
-                "autor": usuario_ativo,
-                "nota": nota_texto
-            }).execute()
-            st.success("Nota adicionada ao calendário!")
-            st.rerun()
-
-    st.markdown("---")
-    res_notas = supabase.table("notas_calendario").select("*").order("data", desc=True).execute()
-    if res_notas.data:
-        st.dataframe(pd.DataFrame(res_notas.data)[['data', 'autor', 'nota']].rename(columns={'data': 'Data', 'autor': 'Autor', 'nota': 'Recado'}), use_container_width=True, hide_index=True)
-
-# --- ABA 3: MURAL DA EQUIPE ---
-with aba3:
-    st.subheader("📋 Mural Transparente do DP")
-    filtro_pessoa = st.selectbox("Filtrar visualização por colaborador:", ["Todos"] + lista_equipe)
-    
-    query = supabase.table("lembretes").select("*")
-    if filtro_pessoa != "Todos":
-        query = query.eq("usuario", filtro_pessoa)
-    res_mural = query.order("data_hora", desc=True).execute()
-
-    if res_mural.data:
-        for item in res_mural.data:
-            c1, c2, c3 = st.columns([3, 1, 1])
-            with c1:
-                st.write(f"👤 **{item['usuario']}**: {item['conteudo']} *(Agendado para: {datetime.fromisoformat(item['data_hora'].replace('Z', '')).strftime('%d/%m/%Y %H:%M')})*")
-            with c2:
-                st.write("🟢 Concluído" if item['concluido'] else "🟡 Pendente")
-            with c3:
-                if not item['concluido']:
-                    if st.button("☑️ Marcar Feito", key=f"btn_{item['id']}"):
-                        supabase.table("lembretes").update({"concluido": True}).eq("id", item['id']).execute()
-                        st.rerun()
-
-# --- ABA 4: GERENCIAR EQUIPE ---
-with aba4:
-    st.subheader("⚙️ Gerenciar Membros do DP")
-    novo_nome = st.text_input("Nome do novo colaborador").upper()
-    if st.button("➕ Adicionar à Equipe"):
-        if novo_nome:
-            try:
-                supabase.table("colaboradores").insert({"nome": novo_nome}).execute()
-                st.success(f"{novo_nome} adicionado com sucesso!")
-                st.cache_data.clear()
-                st.rerun()
-            except Exception:
-                st.error("Nome já cadastrado ou erro ao salvar.")
+        if btn_agendar:
+            if texto_lembrete:
+                dt_completa = datetime.combine(data_lembrete, hora_lembrete).isoformat()
+                supabase.table("lembretes").insert({
+                    "usuario": usuario_ativo,
+                    "conteudo": texto_lembrete,
+                    "data_hora": dt_completa,
+                    "recorrente_mensal": recorrente
