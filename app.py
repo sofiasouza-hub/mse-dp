@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, date
 import calendar
+import textwrap
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 
@@ -18,7 +19,7 @@ st.set_page_config(
 # ============================================================
 # CSS — VISUAL DA REFERÊNCIA
 # ============================================================
-st.markdown("""
+st.markdown(textwrap.dedent("""
 <style>
 /* ---------- BASE ---------- */
 .stApp {
@@ -139,6 +140,10 @@ div[role="radiogroup"] > label:has(input:checked) {
     border-color: #dc2638 !important;
     color: white !important;
     box-shadow: 0 2px 5px rgba(220,38,56,.18);
+}
+
+div[role="radiogroup"] > label input {
+    display: none !important;
 }
 
 div[role="radiogroup"] > label > div:first-child {
@@ -414,7 +419,7 @@ div[data-testid="stDataFrame"] {
     }
 }
 </style>
-""", unsafe_allow_html=True)
+"""), unsafe_allow_html=True)
 
 
 # ============================================================
@@ -459,7 +464,7 @@ lista_equipe = get_colaboradores()
 # ============================================================
 # TOPBAR
 # ============================================================
-st.markdown("""
+st.markdown(textwrap.dedent("""
 <div class="topbar">
     <div class="brand">
         <span class="brand-mse">MSE</span>
@@ -473,7 +478,7 @@ st.markdown("""
         <span>👤 Usuário: Sofia</span>
     </div>
 </div>
-""", unsafe_allow_html=True)
+"""), unsafe_allow_html=True)
 
 
 # ============================================================
@@ -481,7 +486,9 @@ st.markdown("""
 # ============================================================
 idx_padrao = lista_equipe.index("SOFIA") if "SOFIA" in lista_equipe else 0
 
-col_user, col_space = st.columns([1, 4])
+# O seletor continua existindo para trocar de usuário,
+# mas fica compacto logo abaixo da barra superior.
+col_user, col_space = st.columns([0.55, 4.45])
 
 with col_user:
     usuario_ativo = st.selectbox(
@@ -564,10 +571,10 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         # CARD — NOVO LEMBRETE
-        st.markdown("""
+        st.markdown(textwrap.dedent("""
         <div class="card">
             <div class="card-title">💬 &nbsp;O que você precisa lembrar?</div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
 
         texto_lembrete = st.text_input(
             "Lembrete",
@@ -632,10 +639,10 @@ if menu == "🔔  Meus Lembretes":
         # ----------------------------------------------------
         # CARD — LEMBRETES AGENDADOS
         # ----------------------------------------------------
-        st.markdown("""
+        st.markdown(textwrap.dedent("""
         <div class="card">
             <div class="card-title">📋 &nbsp;Seus Lembretes Agendados</div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
 
         try:
             res_lembretes = (
@@ -728,16 +735,16 @@ if menu == "🔔  Meus Lembretes":
                 prox["data_hora"].replace("Z", "")
             )
 
-            st.markdown(f"""
+            st.markdown(textwrap.dedent(f"""
             <div class="next-card">
                 <div class="next-label">🔔 &nbsp;Próximo Lembrete</div>
                 <div class="next-time">{dt.strftime("%H:%M")}</div>
                 <div class="next-text">{prox.get("conteudo", "")}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """), unsafe_allow_html=True)
 
         else:
-            st.markdown("""
+            st.markdown(textwrap.dedent("""
             <div class="next-card">
                 <div class="next-label">🔔 &nbsp;Próximo Lembrete</div>
                 <div class="next-time" style="color:#94a3b8;">--:--</div>
@@ -745,7 +752,7 @@ if menu == "🔔  Meus Lembretes":
                     Sem lembretes pendentes
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """), unsafe_allow_html=True)
 
         # ----------------------------------------------------
         # CALENDÁRIO
@@ -813,7 +820,7 @@ if menu == "🔔  Meus Lembretes":
 
         nome_mes = meses[hoje.month]
 
-        st.markdown(f"""
+        st.markdown(textwrap.dedent(f"""
         <div class="calendar-card">
             <div class="calendar-head">
                 <span>📅 &nbsp;{nome_mes} {hoje.year}</span>
@@ -821,7 +828,7 @@ if menu == "🔔  Meus Lembretes":
             </div>
             {montar_calendario(hoje, dict_eventos)}
         </div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
 
         # Seleção para visualizar os compromissos
         dias_com_evento = sorted(dict_eventos.keys())
@@ -849,13 +856,13 @@ if menu == "🔔  Meus Lembretes":
 # ============================================================
 elif menu == "📅  Calendário Coletivo":
 
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="card">
         <div class="card-title">📅 &nbsp;Calendário Coletivo do DP</div>
         <div style="font-size:11px;color:#64748b;margin-bottom:12px;">
             Avisos, reuniões e eventos gerais visíveis para todo o setor.
         </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 2])
 
@@ -893,10 +900,10 @@ elif menu == "📅  Calendário Coletivo":
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="card">
         <div class="section-title">📋 Recados cadastrados</div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     try:
         res_notas = (
@@ -937,10 +944,10 @@ elif menu == "📅  Calendário Coletivo":
 # ============================================================
 elif menu == "📋  Mural da Equipe":
 
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="card">
         <div class="card-title">📋 &nbsp;Mural da Equipe</div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     filtro_pessoa = st.selectbox(
         "Filtrar por colaborador",
@@ -1064,13 +1071,13 @@ elif menu == "📋  Mural da Equipe":
 # ============================================================
 elif menu == "📊  Dashboard":
 
-    st.markdown(f"""
+    st.markdown(textwrap.dedent(f"""
     <div class="card">
         <div class="card-title">📊 &nbsp;Dashboard de Desempenho — {usuario_ativo}</div>
         <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
             Acompanhamento das tarefas e lembretes individuais.
         </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     try:
         res_dash = (
@@ -1161,13 +1168,13 @@ elif menu == "📊  Dashboard":
 # ============================================================
 elif menu == "⚙️  Gerenciar Equipe":
 
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="card">
         <div class="card-title">⚙️ &nbsp;Gerenciar Membros do DP</div>
         <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
             Cadastre novos membros que poderão utilizar o sistema.
         </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     novo_nome = st.text_input(
         "Nome do novo colaborador",
