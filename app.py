@@ -1259,7 +1259,7 @@ elif menu == "📋  Mural da Equipe":
 
 
 # ============================================================
-# ABA 4 — DASHBOARD
+# ABA 4 — DASHBOARD (COM FILTRO MENSAL E ANUAL)
 # ============================================================
 elif menu == "📊  Dashboard":
 
@@ -1267,10 +1267,39 @@ elif menu == "📊  Dashboard":
     <div class="card">
         <div class="card-title">📊 &nbsp;Dashboard de Desempenho — {usuario_ativo}</div>
         <div style="font-size:11px;color:#64748b;margin-bottom:15px;">
-            Acompanhamento das tarefas e lembretes individuais.
+            Acompanhamento mensal das tarefas e lembretes individuais.
         </div>
     </div>
     """), unsafe_allow_html=True)
+
+    hoje_dash = date.today()
+    
+    lista_meses_nomes = [
+        "Janeiro", "Fevereiro", "Março", "Abril",
+        "Maio", "Junho", "Julho", "Agosto",
+        "Setembro", "Outubro", "Novembro", "Dezembro"
+    ]
+
+    c_mes, c_ano = st.columns([1, 1])
+
+    with c_mes:
+        mes_sel_nome = st.selectbox(
+            "Mês de referência",
+            lista_meses_nomes,
+            index=hoje_dash.month - 1,
+            key="dash_mes_sel"
+        )
+        num_mes_sel = lista_meses_nomes.index(mes_sel_nome) + 1
+
+    with c_ano:
+        ano_sel = st.selectbox(
+            "Ano",
+            [2025, 2026, 2027],
+            index=1,
+            key="dash_ano_sel"
+        )
+
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     try:
         res_dash = (
@@ -1282,73 +1311,52 @@ elif menu == "📊  Dashboard":
         )
 
         if res_dash.data:
+            df_dash_bruto = pd.DataFrame(res_dash.data)
 
-            df_dash = pd.DataFrame(res_dash.data)
-
-            total_tarefas = len(df_dash)
-            concluidas = len(
-                df_dash[df_dash["concluido"] == True]
-            )
-            pendentes = total_tarefas - concluidas
-
-            taxa_sucesso = (
-                concluidas / total_tarefas * 100
-                if total_tarefas > 0
-                else 0.0
+            # Filtra por Mês e Ano específicos
+            df_dash_bruto["dt_obj"] = pd.to_datetime(
+                df_dash_bruto["data_hora"].str.replace("Z", "", regex=False),
+                errors="coerce"
             )
 
-            m1, m2, m3, m4 = st.columns(4)
+            df_dash = df_dash_bruto[
+                (df_dash_bruto["dt_obj"].dt.month == num_mes_sel) &
+                (df_dash_bruto["dt_obj"].dt.year == ano_sel)
+            ]
 
-            m1.metric(
-                "Total de Lembretes",
-                total_tarefas,
-            )
+            if not df_dash.empty:
+                total_tarefas = len(df_dash)
+                concluidas = len(df_dash[df_dash["concluido"] == True])
+                pendentes = total_tarefas - concluidas
 
-            m2.metric(
-                "Concluídos",
-                concluidas,
-            )
-
-            m3.metric(
-                "Pendentes",
-                pendentes,
-            )
-
-            m4.metric(
-                "Taxa de Cumprimento",
-                f"{taxa_sucesso:.1f}%",
-            )
-
-            st.markdown(
-                "<div class='soft-divider'></div>",
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                "**Desempenho Visual**",
-            )
-
-            st.progress(
-                min(taxa_sucesso / 100, 1.0)
-            )
-
-            if taxa_sucesso == 100:
-                st.success(
-                    "Parabéns! Todas as tarefas foram concluídas!"
+                taxa_sucesso = (
+                    concluidas / total_tarefas * 100
+                    if total_tarefas > 0
+                    else 0.0
                 )
-            elif taxa_sucesso >= 70:
-                st.info(
-                    "Excelente ritmo de entregas no setor!"
-                )
+
+                m1, m2, m3, m4 = st.columns(4)
+
+                m1.metric("Total em " + mes_sel_nome, total_tarefas)
+                m2.metric("Concluídos", concluidas)
+                m3.metric("Pendentes", pendentes)
+                m4.metric("Taxa de Cumprimento", f"{taxa_sucesso:.1f}%")
+
+                st.markdown("<div class='soft-divider'></div>", unsafe_allow_html=True)
+                st.markdown(f"**Desempenho Visual — {mes_sel_nome}/{ano_sel}**")
+                st.progress(min(taxa_sucesso / 100, 1.0))
+
+                if taxa_sucesso == 100:
+                    st.success("Parabéns! Todas as tarefas deste mês foram concluídas!")
+                elif taxa_sucesso >= 70:
+                    st.info("Excelente ritmo de entregas no setor!")
+                else:
+                    st.warning("Atenção aos lembretes pendentes deste mês.")
             else:
-                st.warning(
-                    "Atenção aos lembretes pendentes."
-                )
+                st.info(f"Nenhum lembrete registrado para {mes_sel_nome} de {ano_sel}.")
 
         else:
-            st.info(
-                "Nenhum dado registrado para gerar métricas."
-            )
+            st.info("Nenhum dado registrado para gerar métricas.")
 
     except Exception as e:
         st.error(f"Erro ao gerar dashboard: {e}")
