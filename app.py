@@ -514,7 +514,7 @@ supabase = init_supabase()
 
 
 # ============================================================
-# ENVIO DE E-MAIL (RESEND)
+# ENVIO DE E-MAIL (RESEND - ASSUNTO ÚNICO POR LEMBRETE)
 # ============================================================
 def enviar_email_lembrete(destinatario_email, usuario_nome, texto_lembrete, data_hora_str):
     resend_api_key = st.secrets.get("RESEND_API_KEY")
@@ -527,10 +527,13 @@ def enviar_email_lembrete(destinatario_email, usuario_nome, texto_lembrete, data
         "Content-Type": "application/json"
     }
     
+    # Adicionamos a data/hora no assunto para o Gmail NUNCA agrupar em conversas existentes
+    assunto_unico = f"Lembrete DP ({data_hora_str}): {texto_lembrete[:25]}"
+    
     payload = {
         "from": "MSE DP <onboarding@resend.dev>",
         "to": [destinatario_email],
-        "subject": f"📌 Novo Lembrete: {texto_lembrete[:30]}...",
+        "subject": assunto_unico,
         "html": f"""
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b; background-color: #f8fafc; border-radius: 8px;">
             <h2 style="color: #dc2638;">Olá, {usuario_nome}!</h2>
