@@ -147,7 +147,7 @@ div[role="radiogroup"] > label > div:first-child { display: none !important; }
     margin-bottom: 11px;
 }
 
-/* ---------- ESTRUTURA DO MURAL (FORÇA BRANCO ABSOLUTO) ---------- */
+/* ---------- ESTRUTURA DO MURAL ---------- */
 .st-key-mural_card {
     background-color: #ffffff !important;
     background: #ffffff !important;
@@ -241,23 +241,142 @@ div[data-testid="stTimeInput"] input {
     color: white !important;
 }
 
+/* ---------- CALENDÁRIO LATERAL LIMPO ---------- */
+.calendar-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    padding: 15px 16px !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,.045) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.calendar-head {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    color: #1e3a5f !important;
+    font-size: 14px !important;
+    font-weight: 750 !important;
+    margin-bottom: 13px !important;
+}
+
+.calendar-arrow-btn {
+    color: #64748b !important;
+    font-size: 16px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    padding: 0 6px !important;
+    cursor: pointer !important;
+}
+
+.calendar-arrow-btn:hover {
+    color: #dc2638 !important;
+}
+
+.cal-grid-clickable {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 4px !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.cal-weekday-clickable {
+    color: #94a3b8 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    padding-bottom: 5px !important;
+}
+
+.cal-empty {
+    min-height: 31px !important;
+}
+
+.cal-link {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 31px !important;
+    color: #475569 !important;
+    text-decoration: none !important;
+    font-size: 10px !important;
+    line-height: 21px !important;
+}
+
+.cal-link:hover {
+    color: #dc2638 !important;
+}
+
+.cal-number {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    border-radius: 50% !important;
+}
+
+.cal-number.today {
+    background: #dc2638 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+.cal-number.selected {
+    outline: 2px solid #dc2638 !important;
+    outline-offset: 1px !important;
+    font-weight: 800 !important;
+}
+
+.cal-dot-red {
+    width: 4px !important;
+    height: 4px !important;
+    background: #dc2638 !important;
+    border-radius: 50% !important;
+    margin-top: 1px !important;
+}
+
+.calendar-selected {
+    margin-top: 10px !important;
+    background: #f8fafc !important;
+    border: 1px solid #e5e7eb !important;
+    border-left: 3px solid #dc2638 !important;
+    border-radius: 6px !important;
+    padding: 10px 11px !important;
+}
+
+.calendar-selected-title {
+    color: #1e3a5f !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    margin-bottom: 7px !important;
+}
+
+.calendar-event {
+    color: #475569 !important;
+    font-size: 11px !important;
+    padding: 4px 0 !important;
+    border-bottom: 1px solid #edf2f7 !important;
+}
+
 /* ---------- CALENDÁRIO INTERATIVO EMBUTIDO ---------- */
 .form-cal-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
 }
 
 .form-cal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #1e3a5f;
-    font-size: 13px;
-    font-weight: 750;
-    margin-bottom: 8px;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    color: #1e3a5f !important;
+    font-size: 13px !important;
+    font-weight: 750 !important;
+    margin-bottom: 8px !important;
 }
 
 .form-cal-arrow {
@@ -265,7 +384,7 @@ div[data-testid="stTimeInput"] input {
     font-size: 15px !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    padding: 0 5px;
+    padding: 0 5px !important;
 }
 
 .form-cal-arrow:hover {
@@ -273,103 +392,103 @@ div[data-testid="stTimeInput"] input {
 }
 
 .form-cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-    text-align: center;
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 3px !important;
+    text-align: center !important;
 }
 
 .form-cal-weekday {
-    color: #94a3b8;
-    font-size: 9px;
-    font-weight: 700;
-    padding-bottom: 4px;
+    color: #94a3b8 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    padding-bottom: 4px !important;
 }
 
 .form-cal-empty {
-    min-height: 26px;
+    min-height: 26px !important;
 }
 
 .form-cal-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 26px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 26px !important;
     color: #475569 !important;
     text-decoration: none !important;
-    font-size: 10px;
+    font-size: 10px !important;
 }
 
 .form-cal-num {
-    width: 22px;
-    height: 22px;
-    line-height: 22px;
-    border-radius: 50%;
+    width: 22px !important;
+    height: 22px !important;
+    line-height: 22px !important;
+    border-radius: 50% !important;
 }
 
 .form-cal-num:hover {
-    background: #fee2e2;
-    color: #dc2638;
+    background: #fee2e2 !important;
+    color: #dc2638 !important;
 }
 
 .form-cal-num.today {
-    background: #f1f5f9;
-    color: #dc2638;
-    font-weight: 800;
+    background: #f1f5f9 !important;
+    color: #dc2638 !important;
+    font-weight: 800 !important;
 }
 
 .form-cal-num.selected {
-    background: #dc2638;
-    color: #ffffff;
-    font-weight: 800;
+    background: #dc2638 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
 }
 
 /* ---------- TABELA ---------- */
 .reminder-table {
-    width: 100%;
-    margin-top: 2px;
-    border-collapse: collapse;
-    font-family: Arial, sans-serif;
-    font-size: 11px;
+    width: 100% !important;
+    margin-top: 2px !important;
+    border-collapse: collapse !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 11px !important;
 }
 
 .reminder-table th {
-    background: #f1f5f9;
-    color: #64748b;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 750;
-    padding: 8px 9px;
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    text-align: left !important;
+    font-size: 10px !important;
+    font-weight: 750 !important;
+    padding: 8px 9px !important;
 }
 
 .reminder-table td {
-    color: #334155;
-    padding: 9px;
-    border-bottom: 1px solid #edf2f7;
+    color: #334155 !important;
+    padding: 9px !important;
+    border-bottom: 1px solid #edf2f7 !important;
 }
 
 .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 9px;
-    font-weight: 750;
+    display: inline-block !important;
+    padding: 3px 10px !important;
+    border-radius: 12px !important;
+    font-size: 9px !important;
+    font-weight: 750 !important;
 }
 
 .badge-pendente {
-    background: #fef3c7;
-    color: #d97706;
+    background: #fef3c7 !important;
+    color: #d97706 !important;
 }
 
 .badge-concluido {
-    background: #d1fae5;
-    color: #059669;
+    background: #d1fae5 !important;
+    color: #059669 !important;
 }
 
 .soft-divider {
-    height: 1px;
-    background: #edf2f7;
-    margin: 8px 0 12px;
+    height: 1px !important;
+    background: #edf2f7 !important;
+    margin: 8px 0 12px !important;
 }
 </style>
 """), unsafe_allow_html=True)
@@ -564,7 +683,7 @@ def montar_mini_calendario_form(ano, mes, dia_sel):
 # ============================================================
 if menu == "🔔  Meus Lembretes":
 
-    col_principal, col_lateral = st.columns([2.35, 1], gap="medium")
+    col_principal, col_lateral = st.columns([2, 1], gap="large")
 
     # --------------------------------------------------------
     # COLUNA PRINCIPAL
