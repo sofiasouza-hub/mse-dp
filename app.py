@@ -92,18 +92,6 @@ div[data-testid="stVerticalBlock"] {
     font-weight: 600;
 }
 
-/* ---------- USUÁRIO ---------- */
-.user-row {
-    margin-top: -1px;
-    margin-bottom: 9px;
-}
-
-.user-label {
-    color: #64748b;
-    font-size: 11px;
-    margin-bottom: -7px;
-}
-
 /* ---------- MENU PRINCIPAL ---------- */
 div[role="radiogroup"] {
     gap: 7px !important;
@@ -212,7 +200,6 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] * {
 }
 
 .st-key-reminder_form div[data-testid="stTextInput"] input,
-.st-key-reminder_form div[data-testid="stDateInput"] input,
 .st-key-reminder_form div[data-testid="stTimeInput"] input {
     height: 38px !important;
     min-height: 38px !important;
@@ -230,7 +217,6 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] * {
 
 /* ---------- INPUTS E BOTÕES ---------- */
 div[data-testid="stTextInput"] input,
-div[data-testid="stDateInput"] input,
 div[data-testid="stTimeInput"] input {
     border: 1px solid #dbe3ec !important;
     border-radius: 5px !important;
@@ -255,121 +241,87 @@ div[data-testid="stTimeInput"] input {
     color: white !important;
 }
 
-/* ---------- CALENDÁRIO LATERAL LIMPO ---------- */
-.calendar-card {
+/* ---------- CALENDÁRIO INTERATIVO EMBUTIDO ---------- */
+.form-cal-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    padding: 15px 16px;
-    box-shadow: 0 1px 4px rgba(15,23,42,.045);
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
 }
 
-.calendar-head {
+.form-cal-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: #1e3a5f;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 750;
-    margin-bottom: 13px;
+    margin-bottom: 8px;
 }
 
-.calendar-arrow-btn {
+.form-cal-arrow {
     color: #64748b !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    padding: 0 6px;
-    cursor: pointer;
+    padding: 0 5px;
 }
 
-.calendar-arrow-btn:hover {
+.form-cal-arrow:hover {
     color: #dc2638 !important;
 }
 
-.cal-grid-clickable {
+.form-cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 3px;
     text-align: center;
 }
 
-.cal-weekday-clickable {
+.form-cal-weekday {
     color: #94a3b8;
     font-size: 9px;
     font-weight: 700;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
 }
 
-.cal-empty {
-    min-height: 31px;
+.form-cal-empty {
+    min-height: 26px;
 }
 
-.cal-link {
+.form-cal-link {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    min-height: 31px;
+    justify-content: center;
+    min-height: 26px;
     color: #475569 !important;
     text-decoration: none !important;
     font-size: 10px;
-    line-height: 21px;
+}
+
+.form-cal-num {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
     border-radius: 50%;
 }
 
-.cal-link:hover {
-    color: #dc2638 !important;
+.form-cal-num:hover {
+    background: #fee2e2;
+    color: #dc2638;
 }
 
-.cal-number {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    border-radius: 50%;
+.form-cal-num.today {
+    background: #f1f5f9;
+    color: #dc2638;
+    font-weight: 800;
 }
 
-.cal-number.today {
+.form-cal-num.selected {
     background: #dc2638;
     color: #ffffff;
     font-weight: 800;
-}
-
-.cal-number.selected {
-    outline: 2px solid #dc2638;
-    outline-offset: 1px;
-    font-weight: 800;
-}
-
-.cal-dot-red {
-    width: 4px;
-    height: 4px;
-    background: #dc2638;
-    border-radius: 50%;
-    margin-top: 1px;
-}
-
-.calendar-selected {
-    margin-top: 10px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-left: 3px solid #dc2638;
-    border-radius: 6px;
-    padding: 10px 11px;
-}
-
-.calendar-selected-title {
-    color: #1e3a5f;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 7px;
-}
-
-.calendar-event {
-    color: #475569;
-    font-size: 11px;
-    padding: 4px 0;
-    border-bottom: 1px solid #edf2f7;
 }
 
 /* ---------- TABELA ---------- */
@@ -522,7 +474,7 @@ st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
 
 
 # ============================================================
-# FUNÇÕES — CALENDÁRIO COLETIVO
+# FUNÇÕES — CALENDÁRIO
 # ============================================================
 def montar_calendario_coletivo(ano, mes, eventos, dia_selecionado=None):
     dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
@@ -568,6 +520,45 @@ def montar_calendario_coletivo(ano, mes, eventos, dia_selecionado=None):
     return html
 
 
+def montar_mini_calendario_form(ano, mes, dia_sel):
+    dias_semana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+    hoje = date.today()
+
+    html = '<div class="form-cal-grid">'
+
+    for nome_dia in dias_semana:
+        html += f'<div class="form-cal-weekday">{nome_dia}</div>'
+
+    cal = calendar.monthcalendar(ano, mes)
+
+    for semana in cal:
+        for dia in semana:
+            if dia == 0:
+                html += '<div class="form-cal-empty"></div>'
+                continue
+
+            eh_hoje = (dia == hoje.day and mes == hoje.month and ano == hoje.year)
+            esta_selecionado = (dia == dia_sel.day and mes == dia_sel.month and ano == dia_sel.year)
+
+            classes = ["form-cal-num"]
+            if esta_selecionado:
+                classes.append("selected")
+            elif eh_hoje:
+                classes.append("today")
+
+            numero = " ".join(classes)
+            href = f"?f_day={dia}&f_month={mes}&f_year={ano}"
+
+            html += f"""
+            <a class="form-cal-link" href="{href}">
+                <div class="{numero}">{dia}</div>
+            </a>
+            """
+
+    html += "</div>"
+    return html
+
+
 # ============================================================
 # ABA 1 — MEUS LEMBRETES
 # ============================================================
@@ -579,6 +570,54 @@ if menu == "🔔  Meus Lembretes":
     # COLUNA PRINCIPAL
     # --------------------------------------------------------
     with col_principal:
+
+        hoje = date.today()
+
+        # Leitura dos parâmetros da URL para o mini-calendário do formulário
+        f_m = int(st.query_params.get("f_month", hoje.month))
+        f_y = int(st.query_params.get("f_year", hoje.year))
+
+        if st.query_params.get("f_prev"):
+            if f_m == 1:
+                f_m = 12
+                f_y -= 1
+            else:
+                f_m -= 1
+            st.query_params["f_month"] = str(f_m)
+            st.query_params["f_year"] = str(f_y)
+            del st.query_params["f_prev"]
+            st.rerun()
+
+        if st.query_params.get("f_next"):
+            if f_m == 12:
+                f_m = 1
+                f_y += 1
+            else:
+                f_m += 1
+            st.query_params["f_month"] = str(f_m)
+            st.query_params["f_year"] = str(f_y)
+            del st.query_params["f_next"]
+            st.rerun()
+
+        f_day_param = st.query_params.get("f_day")
+        try:
+            dia_f_sel = int(f_day_param) if f_day_param else hoje.day
+        except (TypeError, ValueError):
+            dia_f_sel = hoje.day
+
+        # Garante que o dia escolhido seja válido para o mês atual
+        max_dias = calendar.monthrange(f_y, f_m)[1]
+        if dia_f_sel > max_dias:
+            dia_f_sel = max_dias
+
+        data_lembrete_selecionada = date(f_y, f_m, dia_f_sel)
+
+        meses = [
+            "",
+            "Janeiro", "Fevereiro", "Março", "Abril",
+            "Maio", "Junho", "Julho", "Agosto",
+            "Setembro", "Outubro", "Novembro", "Dezembro"
+        ]
 
         # CARD — NOVO LEMBRETE
         with st.container(border=True, key="reminder_form"):
@@ -596,16 +635,22 @@ if menu == "🔔  Meus Lembretes":
                 key="lembrete_texto_v9",
             )
 
-            col_data, col_hora = st.columns([1, 1], gap="small")
+            col_cal_form, col_hora = st.columns([1.4, 1], gap="medium")
 
-            with col_data:
-                data_lembrete = st.date_input(
-                    "Data",
-                    value=date.today(),
-                    format="DD/MM/YYYY",
-                    label_visibility="collapsed",
-                    key="lembrete_data_v9",
-                )
+            with col_cal_form:
+                mini_cal_html = montar_mini_calendario_form(f_y, f_m, data_lembrete_selecionada)
+                st.html(f"""
+                <div class="form-cal-card">
+                    <div class="form-cal-head">
+                        <span>📅 &nbsp;{meses[f_m]} {f_y} &nbsp;— <b style="color:#dc2638;">Dia {data_lembrete_selecionada.strftime('%d/%m/%Y')}</b></span>
+                        <div>
+                            <a href="?f_prev=1&f_month={f_m}&f_year={f_y}&f_day={dia_f_sel}" class="form-cal-arrow">‹</a>
+                            <a href="?f_next=1&f_month={f_m}&f_year={f_y}&f_day={dia_f_sel}" class="form-cal-arrow">›</a>
+                        </div>
+                    </div>
+                    {mini_cal_html}
+                </div>
+                """)
 
             with col_hora:
                 hora_lembrete = st.time_input(
@@ -618,15 +663,13 @@ if menu == "🔔  Meus Lembretes":
                     key="lembrete_hora_v9",
                 )
 
-            col_check, col_btn = st.columns([1.55, 1], gap="small")
+                st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
-            with col_check:
                 recorrente = st.checkbox(
                     "Repetir este lembrete todo mês",
                     key="lembrete_recorrente_v9",
                 )
 
-            with col_btn:
                 btn_agendar = st.button(
                     "🗓️  Agendar Lembrete →",
                     use_container_width=True,
@@ -637,7 +680,7 @@ if menu == "🔔  Meus Lembretes":
             if btn_agendar:
                 if texto_lembrete:
                     dt_completa = datetime.combine(
-                        data_lembrete,
+                        data_lembrete_selecionada,
                         hora_lembrete,
                     ).isoformat()
 
@@ -738,8 +781,6 @@ if menu == "🔔  Meus Lembretes":
     # COLUNA LATERAL — CALENDÁRIO COLETIVO INTERATIVO
     # --------------------------------------------------------
     with col_lateral:
-        hoje = date.today()
-        
         cal_m = int(st.query_params.get("cal_month", hoje.month))
         cal_y = int(st.query_params.get("cal_year", hoje.year))
 
@@ -817,13 +858,6 @@ if menu == "🔔  Meus Lembretes":
             )
         ):
             dia_selecionado = None
-
-        meses = [
-            "",
-            "Janeiro", "Fevereiro", "Março", "Abril",
-            "Maio", "Junho", "Julho", "Agosto",
-            "Setembro", "Outubro", "Novembro", "Dezembro"
-        ]
 
         nome_mes = meses[cal_m]
 
