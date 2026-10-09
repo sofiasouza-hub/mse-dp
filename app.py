@@ -4,6 +4,7 @@ from datetime import datetime, date
 from html import escape
 import calendar
 import textwrap
+import requests
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 
@@ -513,10 +514,58 @@ supabase = init_supabase()
 
 
 # ============================================================
-# DADOS
+# ENVIO DE E-MAIL (RESEND)
 # ============================================================
+def enviar_email_lembrete(destinatario_email, usuario_nome, texto_lembrete, data_hora_str):
+    resend_api_key = st.secrets.get("RESEND_API_KEY")
+    if not resend_api_key or not destinatario_email:
+        return False
+
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {resend_api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "from": "MSE DP <onboarding@resend.dev>",
+        "to": [destinatario_email],
+        "subject": f"📌 Novo Lembrete: {texto_lembrete[:30]}...",
+        "html": f"""
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b; background-color: #f8fafc; border-radius: 8px;">
+            <h2 style="color: #dc2638;">Olá, {usuario_nome}!</h2>
+            <p style="font-size: 14px;">Você tem um novo lembrete agendado no sistema do <b>DP | MSE</b>:</p>
+            <div style="background: #ffffff; padding: 15px; border-left: 4px solid #dc2638; border-radius: 4px; margin: 15px 0;">
+                <p style="margin: 0; font-size: 15px; font-weight: bold; color: #0f172a;">{texto_lembrete}</p>
+                <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">📅 <b>Data/Hora:</b> {data_hora_str}</p>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8;">Mensagem automática gerada pelo sistema de Gestão de Tarefas MSE DP.</p>
+        </div>
+        """
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        return response.status_code in [200, 201]
+    except Exception:
+        return False
+
+
+# ============================================================
+# DADOS (MAPEAMENTO DE E-MAILS DA EQUIPE)
+# ============================================================
+EMAILS_EQUIPE_PADRAO = {
+    "SOFIA": "sofia.souza@mse.com.br",
+    "ANY": "",
+    "BRUNA": "",
+    "FERNANDA": "",
+    "ISAAC": "",
+    "MARIA": "",
+    "NATALIA": "",
+}
+
 @st.cache_data(ttl=5)
-def get_colaboradores():
+def get_colaboradores_dict():
     try:
         res = (
             supabase
@@ -525,17 +574,20 @@ def get_colaboradores():
             .order("nome")
             .execute()
         )
-        nomes = [item["nome"] for item in res.data] if res.data else []
+        nomes_bd = [item["nome"] for item in res.data] if res.data else []
 
-        if not nomes:
-            nomes = ["ANY", "BRUNA", "FERNANDA", "ISAAC", "MARIA", "NATALIA", "SOFIA"]
+        resultado = EMAILS_EQUIPE_PADRAO.copy()
+        for nome in nomes_bd:
+            if nome not in resultado:
+                resultado[nome] = ""
 
-        return nomes
+        return resultado
     except Exception:
-        return ["ANY", "BRUNA", "FERNANDA", "ISAAC", "MARIA", "NATALIA", "SOFIA"]
+        return EMAILS_EQUIPE_PADRAO.copy()
 
 
-lista_equipe = get_colaboradores()
+colaboradores_dict = get_colaboradores_dict()
+lista_equipe = list(colaboradores_dict.keys())
 
 
 # ============================================================
@@ -804,10 +856,11 @@ if menu == "🔔  Meus Lembretes":
 
             if btn_agendar:
                 if texto_lembrete:
-                    dt_completa = datetime.combine(
+                    dt_obj_combine = datetime.combine(
                         data_lembrete_selecionada,
                         hora_lembrete,
-                    ).isoformat()
+                    )
+                    dt_completa = dt_obj_combine.isoformat()
 
                     dados_insert = {
                         "usuario": usuario_ativo,
@@ -819,7 +872,25 @@ if menu == "🔔  Meus Lembretes":
 
                     try:
                         supabase.table("lembretes").insert(dados_insert).execute()
-                        st.success("Lembrete agendado com sucesso!")
+                        
+                        # Busca o e-mail cadastrado do usuário
+                        email_dest = colaboradores_dict.get(usuario_ativo, "")
+                        dt_format_email = dt_obj_combine.strftime("%d/%m/%Y às %H:%M")
+                        
+                        enviado = False
+                        if email_dest:
+                            enviado = enviar_email_lembrete(
+                                email_dest,
+                                usuario_ativo,
+                                texto_lembrete,
+                                dt_format_email
+                            )
+
+                        if enviado:
+                            st.success(f"Lembrete agendado e notificação enviada para {email_dest}!")
+                        else:
+                            st.success("Lembrete agendado com sucesso!")
+
                         st.rerun()
                     except Exception as e:
                         st.error(f"Erro ao salvar: {e}")
@@ -1403,7 +1474,7 @@ elif menu == "⚙️  Gerenciar Equipe":
 
     novo_nome = st.text_input(
         "Nome do novo colaborador",
-        placeholder="Digite o nome",
+        placeholder="Ex: SOFIA",
     ).upper()
 
     if st.button(
