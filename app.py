@@ -849,7 +849,7 @@ if menu == "🔔  Meus Lembretes":
             try:
                 dt_obj = datetime.fromisoformat(
                     item["data_hora"].replace("Z", "")
-                )
+                ).replace(tzinfo=None)
 
                 concluido = bool(item.get("concluido"))
                 
@@ -1191,7 +1191,7 @@ elif menu == "📋  Mural da Equipe":
                         try:
                             dt_obj_mural = datetime.fromisoformat(
                                 item["data_hora"].replace("Z", "")
-                            )
+                            ).replace(tzinfo=None)
                             dt_format = dt_obj_mural.strftime("%d/%m/%Y %H:%M")
                         except Exception:
                             dt_obj_mural = None
@@ -1244,7 +1244,7 @@ elif menu == "📋  Mural da Equipe":
                                     if item.get("recorrente_mensal"):
                                         dt_atual = datetime.fromisoformat(
                                             item["data_hora"].replace("Z", "")
-                                        )
+                                        ).replace(tzinfo=None)
                                         dt_prox_mes = dt_atual + relativedelta(months=1)
 
                                         supabase.table("lembretes").insert({
