@@ -480,6 +480,11 @@ div[data-testid="stTimeInput"] input {
     color: #d97706 !important;
 }
 
+.badge-atrasado {
+    background: #fee2e2 !important;
+    color: #dc2638 !important;
+}
+
 .badge-concluido {
     background: #d1fae5 !important;
     color: #059669 !important;
@@ -691,6 +696,7 @@ if menu == "🔔  Meus Lembretes":
     with col_principal:
 
         hoje = date.today()
+        agora = datetime.now()
 
         # Leitura dos parâmetros da URL para o mini-calendário do formulário
         f_m = int(st.query_params.get("f_month", hoje.month))
@@ -837,6 +843,7 @@ if menu == "🔔  Meus Lembretes":
             st.error(f"Erro ao carregar lembretes: {e}")
 
         linhas_tabela = ""
+        qtd_atrasados = 0
 
         for item in (res_lembretes.data or []):
             try:
@@ -845,12 +852,17 @@ if menu == "🔔  Meus Lembretes":
                 )
 
                 concluido = bool(item.get("concluido"))
-                status = "Concluído" if concluido else "Pendente"
-                badge_class = (
-                    "badge badge-concluido"
-                    if concluido
-                    else "badge badge-pendente"
-                )
+                
+                if concluido:
+                    status = "Concluído"
+                    badge_class = "badge badge-concluido"
+                elif dt_obj < agora:
+                    status = "Atrasado"
+                    badge_class = "badge badge-atrasado"
+                    qtd_atrasados += 1
+                else:
+                    status = "Pendente"
+                    badge_class = "badge badge-pendente"
 
                 data_txt = escape(dt_obj.strftime("%d/%m/%Y"))
                 hora_txt = escape(dt_obj.strftime("%H:%M"))
@@ -866,6 +878,9 @@ if menu == "🔔  Meus Lembretes":
                 """
             except Exception:
                 continue
+
+        if qtd_atrasados > 0:
+            st.warning(f"⚠️ **Atenção:** Você tem **{qtd_atrasados}** lembrete(s) atrasado(s) pendentes!")
 
         if not linhas_tabela:
             linhas_tabela = """
@@ -1153,6 +1168,8 @@ elif menu == "📋  Mural da Equipe":
 
         st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
+        agora = datetime.now()
+
         try:
             query = supabase.table("lembretes").select("*")
 
@@ -1172,10 +1189,12 @@ elif menu == "📋  Mural da Equipe":
 
                     with c1:
                         try:
-                            dt_format = datetime.fromisoformat(
+                            dt_obj_mural = datetime.fromisoformat(
                                 item["data_hora"].replace("Z", "")
-                            ).strftime("%d/%m/%Y %H:%M")
+                            )
+                            dt_format = dt_obj_mural.strftime("%d/%m/%Y %H:%M")
                         except Exception:
+                            dt_obj_mural = None
                             dt_format = ""
 
                         rec_label = (
@@ -1198,9 +1217,15 @@ elif menu == "📋  Mural da Equipe":
                         )
 
                     with c2:
-                        if item.get("concluido"):
+                        concluido = item.get("concluido")
+                        if concluido:
                             st.markdown(
                                 '<span class="badge badge-concluido">Concluído</span>',
+                                unsafe_allow_html=True,
+                            )
+                        elif dt_obj_mural and dt_obj_mural < agora:
+                            st.markdown(
+                                '<span class="badge badge-atrasado">Atrasado</span>',
                                 unsafe_allow_html=True,
                             )
                         else:
